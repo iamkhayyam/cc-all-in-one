@@ -17,8 +17,42 @@
     --ff-mid: #4A4A46;
     --ff-border: rgba(0,0,0,0.08);
   }
+  --color-text-primary: #1a1a18;
+  --color-text-secondary: #5a5a56;
+  --color-text-tertiary: #9a9a94;
+  --color-background-primary: #ffffff;
+  --color-background-secondary: #f5f4f0;
+  --color-border-primary: rgba(26,26,24,0.4);
+  --color-border-secondary: rgba(26,26,24,0.25);
+  --color-border-tertiary: rgba(26,26,24,0.12);
+  --border-radius-md: 8px;
+  --border-radius-lg: 12px;
+  }
+  @media(prefers-color-scheme:dark){
+  :root{
+    --ff-gold: #E4B85E;--ff-gold-light: #6B5228;--ff-green: #5dcaa5;--ff-green-light: rgba(42,138,90,0.18);
+    --ff-teal: #5dcaa5;--ff-cream: #1a1a18;--ff-dark: #f0efe8;--ff-mid: #b8b8b0;--ff-border: rgba(240,239,232,0.1);
+    --color-text-primary:#f0efe8;--color-text-secondary:#b8b8b0;--color-text-tertiary:#8a8a82;
+    --color-background-primary:#1a1a18;--color-background-secondary:#242420;
+    --color-border-primary:rgba(240,239,232,0.35);--color-border-secondary:rgba(240,239,232,0.2);--color-border-tertiary:rgba(240,239,232,0.1);
+  }
+  body{background:#1a1a18;}
+  .mirror-header.human{background:rgba(24,95,165,0.18);color:#85b7eb;}
+  .mirror-header.cattle{background:rgba(42,138,90,0.18);color:#5dcaa5;}
+  .mirror-cell.human{background:rgba(24,95,165,0.06);}
+  .mirror-cell.cattle{background:rgba(42,138,90,0.06);}
+  .mirror-advantage{background:rgba(42,138,90,0.15);color:#5dcaa5;}
+  .mirror-neutral{background:rgba(24,95,165,0.15);color:#85b7eb;}
+  .badge-legacy{background:rgba(240,239,232,0.08);color:#8a8a82;}
+  .badge-emerging{background:rgba(186,117,23,0.18);color:#e4a83a;}
+  .badge-platform{background:rgba(42,138,90,0.18);color:#5dcaa5;}
+  .featured-badge{background:rgba(42,138,90,0.18);color:#5dcaa5;}
+  .comp-card.cachcow{border-color:#5dcaa5;}
+  .bar-human{background:rgba(24,95,165,0.35);color:#85b7eb;}
+  .bar-cattle{background:rgba(42,138,90,0.35);color:#5dcaa5;}
+  }
   * { box-sizing: border-box; margin: 0; padding: 0; }
-  body { font-family: 'Instrument Sans', sans-serif; }
+  body { font-family: 'Instrument Sans', sans-serif; background: var(--color-background-primary); color: var(--color-text-primary); }
   .page { padding: 2rem 1.5rem; background: transparent; max-width: 900px; }
 
   .eyebrow { font-family: 'DM Mono', monospace; font-size: 11px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--color-text-secondary); margin-bottom: 8px; }
