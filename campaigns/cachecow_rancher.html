@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CacheCow — For Ranchers</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,900;1,400;1,700&family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=DM+Sans:wght@300;400;500&display=swap');
+*{box-sizing:border-box;margin:0;padding:0;}
+:root{--cream:#f5f3ee;--ink:#1a1a18;--ink2:#4a4a46;--ink3:#8a8a84;--green:#1a3d2b;--gl:#e8f0eb;--border:rgba(26,26,24,0.12);}
+body{background:var(--cream);font-family:'DM Sans',sans-serif;color:var(--ink);}
+.wrap{max-width:900px;margin:0 auto;}
+.topbar{padding:1.25rem 2.5rem;display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid var(--border);}
+.brand{font-family:'Libre Baskerville',Georgia,serif;font-size:1rem;font-weight:700;color:var(--ink);}
+.top-r{font-size:11px;letter-spacing:0.08em;text-transform:uppercase;color:var(--ink3);}
+.site-nav{padding:0 2.5rem;border-bottom:1px solid var(--border);display:flex;gap:0;overflow-x:auto;scrollbar-width:none;}
+.site-nav::-webkit-scrollbar{display:none;}
+.snl{font-size:11px;font-weight:500;letter-spacing:0.08em;text-transform:uppercase;color:var(--ink3);padding:0.9rem 1.25rem;text-decoration:none;border-bottom:2px solid transparent;white-space:nowrap;transition:color 0.15s;}
+.snl:hover{color:var(--ink);}
+.snl.here{color:var(--ink);border-bottom-color:var(--ink);}
+.hero{padding:4.5rem 2.5rem 2.5rem;border-bottom:1px solid var(--border);}
+.ch{font-size:11px;letter-spacing:0.12em;text-transform:uppercase;color:var(--ink3);margin-bottom:1.5rem;}
+h1{font-family:'Playfair Display',Georgia,serif;font-size:clamp(2.6rem,5.5vw,4.2rem);font-weight:900;line-height:1.06;max-width:820px;margin-bottom:1.5rem;letter-spacing:-0.01em;}
+h1 em{font-style:italic;font-weight:400;}
+.hsub{font-size:16px;font-weight:300;line-height:1.8;max-width:520px;color:var(--ink2);margin-bottom:2.5rem;}
+.brow{display:flex;gap:12px;flex-wrap:wrap;}
+.bg{background:var(--green);color:#fff;border:none;padding:13px 30px;font-family:'DM Sans',sans-serif;font-size:13px;font-weight:500;letter-spacing:0.02em;cursor:pointer;}
+.bo{background:transparent;color:var(--ink);border:1px solid rgba(26,26,24,0.3);padding:13px 30px;font-family:'DM Sans',sans-serif;font-size:13px;cursor:pointer;}
+.sec{padding:3rem 2.5rem;border-bottom:1px solid var(--border);}
+.slbl{font-size:11px;letter-spacing:0.1em;text-transform:uppercase;color:var(--ink3);margin-bottom:1rem;}
+h2{font-family:'Playfair Display',Georgia,serif;font-size:clamp(1.5rem,3vw,2.1rem);font-weight:700;line-height:1.2;max-width:640px;margin-bottom:1rem;}
+.sbody{font-size:15px;font-weight:300;line-height:1.8;color:var(--ink2);max-width:580px;margin-bottom:1.5rem;}
+.sitalic{font-family:'Playfair Display',Georgia,serif;font-style:italic;font-size:clamp(1.1rem,2.5vw,1.55rem);line-height:1.45;max-width:560px;padding-left:1.5rem;border-left:2px solid rgba(26,26,24,0.18);margin-bottom:1.75rem;}
+.nums{display:grid;grid-template-columns:repeat(auto-fit,minmax(148px,1fr));gap:1px;background:var(--border);border:1px solid var(--border);margin:1.5rem 0 2rem;}
+.nc{background:var(--cream);padding:1.5rem 1.25rem;}
+.nb{font-family:'Playfair Display',Georgia,serif;font-size:2.3rem;font-weight:900;line-height:1;margin-bottom:6px;}
+.nl{font-size:12px;color:var(--ink3);line-height:1.4;}
+.stages{margin:1.5rem 0;}
+.stage{display:grid;grid-template-columns:52px 1fr;gap:16px;padding:1.75rem 0;border-bottom:1px solid var(--border);align-items:start;}
+.stage:last-child{border-bottom:none;}
+.sn{font-family:'Playfair Display',Georgia,serif;font-size:2rem;font-weight:900;color:rgba(26,26,24,0.15);line-height:1;}
+.st{font-size:15px;font-weight:500;margin-bottom:4px;}
+.sb{font-size:13px;color:var(--ink2);line-height:1.65;}
+.badge{display:inline-block;margin-top:8px;font-size:11px;font-weight:500;padding:3px 10px;background:var(--gl);color:var(--green);}
+.tc{display:grid;grid-template-columns:1fr 1fr;gap:36px;margin:1.5rem 0;}
+@media(max-width:580px){.tc{grid-template-columns:1fr;}}
+.rl{margin:1rem 0;}
+.rli{display:grid;grid-template-columns:20px 1fr;gap:10px;margin-bottom:1rem;}
+.rn{font-family:'Playfair Display',Georgia,serif;font-size:0.85rem;font-weight:700;color:var(--ink3);}
+.rt{font-size:14px;font-weight:500;margin-bottom:2px;}
+.rb{font-size:13px;color:var(--ink2);line-height:1.55;}
+.hl{background:var(--green);padding:2.5rem;margin:1.5rem 0;}
+.hl h2{color:#fff;max-width:100%;}
+.hl .sbody{color:rgba(255,255,255,0.72);max-width:100%;}
+.hl .bg{background:#fff;color:var(--green);}
+.footer{padding:2rem 2.5rem;border-top:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px;}
+.fb{font-family:'Libre Baskerville',Georgia,serif;font-size:1rem;font-weight:700;color:var(--ink);}
+.fl{font-size:12px;color:var(--ink3);text-decoration:none;}
+.fl:hover{color:var(--ink);}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <div class="topbar">
+    <span class="brand">CacheCow</span>
+    <span class="top-r">Movement Intelligence Platform</span>
+  </div>
+
+  <nav class="site-nav">
+    <a class="snl here" href="cachecow_rancher.html">For ranchers</a>
+    <a class="snl" href="cachecow_investor.html">Investors</a>
+    <a class="snl" href="cachecow_hardware.html">Hardware + subscription</a>
+    <a class="snl" href="cachecow_data.html">Data licensing</a>
+    <a class="snl" href="cachecow_platform.html">Movement intelligence</a>
+    <a class="snl" href="cachecow_mii.html">Motion Intelligence Index</a>
+  
+    <a class="snl" href="cachecow_weather.html">Weather intelligence</a>
+  </nav>
+
+  <div class="hero">
+    <p class="ch">01 — The Transformation</p>
+    <h1>Your herd is moving.<br><em>Are you moving with it?</em></h1>
+    <p class="hsub">Cattle operations are shifting from reactive herd management to predictive individual animal intelligence. Every operation goes through four stages. Let's find out where yours is.</p>
+    <div class="brow">
+      <button class="bg">Apply for a pilot ↗</button>
+      <button class="bo">See the four stages</button>
+    </div>
+  </div>
+
+  <div class="sec">
+    <p class="slbl">The uncomfortable truth</p>
+    <h2>By the time you see a sick animal, you've already lost the fight.</h2>
+    <p class="sitalic">"The industry calls it early detection. It isn't. It's just fast reaction. By the time symptoms are visible, the animal has been declining for days."</p>
+    <p class="sbody">Most cattle operations absorb losses every year that aren't bad luck. They're a data problem. The tools the industry has relied on weren't built for individual animals — they were built for herd averages, and they were built decades ago. Every operation that accepts 2–4% annual mortality as normal is leaving $24,500 on the table for every thousand head.</p>
+    <div class="nums">
+      <div class="nc"><p class="nb">2–4%</p><p class="nl">Average annual herd loss from preventable illness</p></div>
+      <div class="nc"><p class="nb">$2,500</p><p class="nl">Reactive treatment cost once symptoms appear</p></div>
+      <div class="nc"><p class="nb">$150</p><p class="nl">Preventive intervention cost with 48-hour advance warning</p></div>
+      <div class="nc"><p class="nb">$24,500</p><p class="nl">Preventable annual loss on a 1,000-head operation</p></div>
+    </div>
+  </div>
+
+  <div class="sec">
+    <p class="slbl">Where the market is today</p>
+    <h2>Most operations are either watching or reacting. Neither is enough.</h2>
+    <p class="sbody">The industry has normalised this. It calls reactive alerts "early detection." It calls RFID numbers "individual tracking." It measures success by how fast you can respond — not whether you needed to respond at all. The gap between what's being tolerated and what's now possible is the size of your next hire, your next expansion, your next year.</p>
+  </div>
+
+  <div class="sec">
+    <p class="slbl">Where every operation must go</p>
+    <h2>Four stages. Every operation is somewhere on this path.</h2>
+    <p class="sbody">The future isn't bigger herds managed loosely. It's precision herds managed individually — where the AI knows each animal's baseline, flags deviation 48–72 hours before symptoms appear, and gets smarter with every passing month.</p>
+    <div class="stages">
+      <div class="stage">
+        <p class="sn">01</p>
+        <div>
+          <p class="st">Managing by observation</p>
+          <p class="sb">Experience, gut, and a morning walk. You know your animals, but you're limited to what you can see. Losses are accepted as the cost of doing business.</p>
+        </div>
+      </div>
+      <div class="stage">
+        <p class="sn">02</p>
+        <div>
+          <p class="st">Reactive monitoring</p>
+          <p class="sb">Tags, boluses, alerts — but they fire after the problem has started. You're still losing the same animals. You just have more paperwork about it.</p>
+        </div>
+      </div>
+      <div class="stage">
+        <p class="sn">03</p>
+        <div>
+          <p class="st">Predictive intelligence</p>
+          <p class="sb">Individual AI monitoring. Illness flagged 48–72 hours before symptoms. Vet interventions drop from $2,500 to $150. You stop losing animals you shouldn't lose.</p>
+          <span class="badge">This is where CacheCow takes you</span>
+        </div>
+      </div>
+      <div class="stage">
+        <p class="sn">04</p>
+        <div>
+          <p class="st">Intelligence-led operation</p>
+          <p class="sb">Your herd teaches itself. Every calving cycle, breeding season, and illness event makes the system smarter. Individual animal histories drive culling, genetics, and feed decisions. Your data becomes a second revenue stream through the Motion Intelligence Index.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="sec">
+    <p class="slbl">The pilot program</p>
+    <h2>This isn't a sales process. It's a diagnostic.</h2>
+    <p class="sbody">We map your operation to the four stages, show you exactly what Stage 3 looks like in practice, and let the numbers decide. No commitment until the data speaks. We're selecting a small founding cohort now — operations of 500 head or more who want to know exactly where they stand.</p>
+    <div class="tc">
+      <div>
+        <p class="slbl">What you get</p>
+        <div class="rl">
+          <div class="rli"><span class="rn">—</span><div><p class="rt">Full deployment across your herd</p><p class="rb">Real-time individual health monitoring, 48–72 hour illness prediction, breeding and feed optimisation insights.</p></div></div>
+          <div class="rli"><span class="rn">—</span><div><p class="rt">Overnight learning, every night</p><p class="rb">While your herd sleeps, every device updates its AI model. Every morning the system is smarter than yesterday.</p></div></div>
+          <div class="rli"><span class="rn">—</span><div><p class="rt">No infrastructure required</p><p class="rb">No gateways, no cell coverage, no annual battery swap. Works at -40°C. Built for real pastures.</p></div></div>
+          <div class="rli"><span class="rn">—</span><div><p class="rt">Data royalty revenue</p><p class="rb">Founding partners earn 15–20% of licensing revenue their herd generates through the Motion Intelligence Index.</p></div></div>
+        </div>
+      </div>
+      <div>
+        <p class="slbl">What we're looking for</p>
+        <div class="rl">
+          <div class="rli"><span class="rn">—</span><div><p class="rt">500 head or more</p><p class="rb">Large enough for population-level intelligence to emerge and for the economics to be undeniable.</p></div></div>
+          <div class="rli"><span class="rn">—</span><div><p class="rt">Owners or managers who engage with data</p><p class="rb">You don't need a tech background. You need curiosity about what individual animal intelligence looks like at scale.</p></div></div>
+          <div class="rli"><span class="rn">—</span><div><p class="rt">A genuine interest in Stage 4</p><p class="rb">Founding partners shape how the index works. Your operation's data helps define what individual animal intelligence means for the whole industry.</p></div></div>
+        </div>
+      </div>
+    </div>
+    <div class="hl">
+      <h2>Ready to find out what stage your operation is at?</h2>
+      <p class="sbody">Takes one conversation. No commitment. We'll tell you exactly where you stand and whether CacheCow makes sense for your operation.</p>
+      <button class="bg">Start the conversation ↗</button>
+    </div>
+  </div>
+
+  <div class="footer">
+    <span class="fb">CacheCow</span>
+    <div style="display:flex;gap:24px;flex-wrap:wrap;">
+      <a class="fl" href="cachecow_investor.html">Investor overview →</a>
+      <a class="fl" href="cachecow_mii.html">Motion Intelligence Index →</a>
+    </div>
+  </div>
+
+</div>
+</body>
+</html>

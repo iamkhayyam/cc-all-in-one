@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CacheCow / ForcedField Technologies</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,600;1,400&family=DM+Sans:wght@300;400;500&family=Libre+Baskerville:ital,wght@0,400;1,400&display=swap');
+
+:root {
+  --color-text-primary: #1a1a18;
+  --color-text-secondary: #5a5a56;
+  --color-text-tertiary: #9a9a94;
+  --color-background-primary: #ffffff;
+  --color-background-secondary: #f5f4f0;
+  --color-border-tertiary: rgba(26,26,24,0.12);
+  --color-border-secondary: rgba(26,26,24,0.25);
+  --color-border-primary: rgba(26,26,24,0.4);
+  --border-radius-md: 8px;
+  --border-radius-lg: 12px;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --color-text-primary: #f0efe8;
+    --color-text-secondary: #a8a89e;
+    --color-text-tertiary: #6a6a62;
+    --color-background-primary: #1a1a18;
+    --color-background-secondary: #242420;
+    --color-border-tertiary: rgba(240,239,232,0.1);
+    --color-border-secondary: rgba(240,239,232,0.2);
+    --color-border-primary: rgba(240,239,232,0.35);
+  }
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html { background: var(--color-background-primary); }
+body {
+  font-family: 'DM Sans', sans-serif;
+  color: var(--color-text-primary);
+  background: var(--color-background-primary);
+  -webkit-font-smoothing: antialiased;
+}
+
+.app { max-width: 900px; margin: 0 auto; }
+
+.eyebrow { font-size: 11px; font-weight: 500; letter-spacing: 0.12em; text-transform: uppercase; color: var(--color-text-tertiary); margin-bottom: 1rem; }
+
+/* hero */
+.hero { padding: 4rem 2rem 3rem; border-bottom: 0.5px solid var(--color-border-tertiary); }
+.hero h1 { font-family: 'Playfair Display', Georgia, serif; font-size: clamp(2.2rem, 5vw, 3.2rem); font-weight: 600; line-height: 1.15; max-width: 660px; margin-bottom: 1.25rem; }
+.hero h1 em { font-style: italic; color: var(--color-text-secondary); }
+.hero .lead { font-family: 'Libre Baskerville', Georgia, serif; font-size: 18px; font-weight: 400; line-height: 1.8; max-width: 560px; color: var(--color-text-secondary); }
+
+/* sections */
+.section { padding: 2.5rem 2rem; border-bottom: 0.5px solid var(--color-border-tertiary); }
+.section:last-of-type { border-bottom: none; }
+.section-title { font-family: 'Playfair Display', Georgia, serif; font-size: 1.5rem; font-weight: 600; line-height: 1.3; margin-bottom: 0.5rem; }
+.section-desc { font-family: 'Libre Baskerville', Georgia, serif; font-size: 15px; color: var(--color-text-secondary); line-height: 1.75; max-width: 560px; margin-bottom: 1.5rem; }
+
+/* card grid */
+.card-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 12px; }
+
+.card {
+  display: block;
+  background: var(--color-background-secondary);
+  border: 0.5px solid var(--color-border-tertiary);
+  border-radius: var(--border-radius-lg);
+  padding: 1.5rem 1.25rem;
+  text-decoration: none;
+  color: inherit;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+.card:hover {
+  border-color: var(--color-border-primary);
+  box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+}
+.card-badge {
+  display: inline-block;
+  font-size: 10px;
+  font-weight: 500;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  background: var(--color-background-primary);
+  border: 0.5px solid var(--color-border-secondary);
+  border-radius: 20px;
+  padding: 3px 10px;
+  color: var(--color-text-tertiary);
+  margin-bottom: 0.75rem;
+}
+.card-title {
+  font-family: 'Playfair Display', Georgia, serif;
+  font-size: 1.15rem;
+  font-weight: 600;
+  line-height: 1.3;
+  margin-bottom: 0.5rem;
+}
+.card-body {
+  font-family: 'Libre Baskerville', Georgia, serif;
+  font-size: 14px;
+  color: var(--color-text-secondary);
+  line-height: 1.7;
+}
+.card-arrow {
+  display: inline-block;
+  margin-top: 0.75rem;
+  font-size: 13px;
+  color: var(--color-text-tertiary);
+  letter-spacing: 0.05em;
+}
+
+/* footer */
+.footer-bar { padding: 1.5rem 2rem; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px; border-top: 0.5px solid var(--color-border-tertiary); }
+.footer-brand { font-family: 'Playfair Display', Georgia, serif; font-size: 1.1rem; font-weight: 600; }
+.footer-note { font-size: 12px; color: var(--color-text-tertiary); }
+
+@media (max-width: 560px) {
+  .hero { padding: 2.5rem 1.25rem 2rem; }
+  .section { padding: 2rem 1.25rem; }
+  .card-grid { grid-template-columns: 1fr; }
+  .footer-bar { padding: 1.25rem; }
+}
+</style>
+</head>
+<body>
+<div class="app">
+
+  <div class="hero">
+    <p class="eyebrow">CacheCow / ForcedField Technologies</p>
+    <h1>The complete <em>intelligence library.</em></h1>
+    <p class="lead">Technical architecture, market campaigns, accelerator strategy, and the foundational science behind CacheCow's biological AI platform -- all in one place.</p>
+  </div>
+
+  <!-- TECHNICAL PRIMER -->
+  <div class="section">
+    <p class="eyebrow">Foundation</p>
+    <p class="section-title">Technical Primer</p>
+    <p class="section-desc">The core science: bioelectric communication, quantum magnetic sensing, and neuromorphic edge inference -- the three technological silos that make pre-symptomatic detection possible.</p>
+    <div class="card-grid">
+      <a class="card" href="primer/technical-primer.html">
+        <span class="card-badge">Science</span>
+        <p class="card-title">Reading the Language of Biology</p>
+        <p class="card-body">BCC, TMR sensors, spiking neural networks, and the copper coil breakthrough. The full technical stack explained.</p>
+        <span class="card-arrow">View primer &rarr;</span>
+      </a>
+    </div>
+  </div>
+
+  <!-- ARCHITECTURE -->
+  <div class="section">
+    <p class="eyebrow">Architecture</p>
+    <p class="section-title">Convergence Architecture</p>
+    <p class="section-desc">Independent research teams arriving at the same architecture from different substrates -- drones, active inference, physics-ML identifiability, and Halter's market validation.</p>
+    <div class="card-grid">
+      <a class="card" href="architecture/index.html">
+        <span class="card-badge">Architecture</span>
+        <p class="card-title">Architecture Convergence Brief</p>
+        <p class="card-body">Four research domains, one answer. The mathematical and physical foundations converging on CacheCow's design.</p>
+        <span class="card-arrow">View architecture &rarr;</span>
+      </a>
+    </div>
+  </div>
+
+  <!-- CAMPAIGNS -->
+  <div class="section">
+    <p class="eyebrow">Campaigns</p>
+    <p class="section-title">Market Campaigns</p>
+    <p class="section-desc">Audience-specific pages for ranchers, investors, and technical partners. Revenue models, competitive analysis, and the Motion Intelligence Index.</p>
+    <div class="card-grid">
+      <a class="card" href="campaigns/cachecow_rancher.html">
+        <span class="card-badge">Ranchers</span>
+        <p class="card-title">For Ranchers</p>
+        <p class="card-body">Predictive cattle health monitoring. The four stages of herd management and pilot program invitation.</p>
+        <span class="card-arrow">View page &rarr;</span>
+      </a>
+      <a class="card" href="campaigns/cachecow_investor.html">
+        <span class="card-badge">Investors</span>
+        <p class="card-title">Investor Thesis</p>
+        <p class="card-body">Platform company positioning, four competitive moats, three revenue layers, and the fundraising path.</p>
+        <span class="card-arrow">View page &rarr;</span>
+      </a>
+      <a class="card" href="campaigns/cachecow_hardware.html">
+        <span class="card-badge">Revenue</span>
+        <p class="card-title">Hardware + Subscription</p>
+        <p class="card-body">Revenue Stream 01. Device economics, subscription model, and feature comparison vs. incumbents.</p>
+        <span class="card-arrow">View page &rarr;</span>
+      </a>
+      <a class="card" href="campaigns/cachecow_data.html">
+        <span class="card-badge">Revenue</span>
+        <p class="card-title">Data Licensing</p>
+        <p class="card-body">Revenue Stream 02. Insurance, genetics, and pharma data licensing with founding partner program.</p>
+        <span class="card-arrow">View page &rarr;</span>
+      </a>
+      <a class="card" href="campaigns/cachecow_platform.html">
+        <span class="card-badge">Revenue</span>
+        <p class="card-title">Movement Intelligence Platform</p>
+        <p class="card-body">Revenue Stream 03. Platform licensing across wearables, sports, healthcare, and industrial markets.</p>
+        <span class="card-arrow">View page &rarr;</span>
+      </a>
+      <a class="card" href="campaigns/cachecow_mii.html">
+        <span class="card-badge">Index</span>
+        <p class="card-title">Motion Intelligence Index</p>
+        <p class="card-body">Insurance arbitrage, genetic alpha, predictive biology, and the compounding moat -- tabbed deep-dive.</p>
+        <span class="card-arrow">View page &rarr;</span>
+      </a>
+      <a class="card" href="campaigns/cachecow_weather.html">
+        <span class="card-badge">Intelligence</span>
+        <p class="card-title">Weather Intelligence</p>
+        <p class="card-body">Weather data integration layer for environmental context in biological signal interpretation.</p>
+        <span class="card-arrow">View page &rarr;</span>
+      </a>
+      <a class="card" href="campaigns/wearables_vs_cattle_isomorphism.html">
+        <span class="card-badge">Analysis</span>
+        <p class="card-title">Wearables vs. Cattle Isomorphism</p>
+        <p class="card-body">Structural mirror between human wearables market and cattle intelligence. Competitive landscape analysis.</p>
+        <span class="card-arrow">View page &rarr;</span>
+      </a>
+      <a class="card" href="campaigns/cachecow_investor_revenue_pages.html">
+        <span class="card-badge">Standalone</span>
+        <p class="card-title">Revenue Model (Combined)</p>
+        <p class="card-body">Investor overview and all three revenue streams in a single tabbed view.</p>
+        <span class="card-arrow">View page &rarr;</span>
+      </a>
+    </div>
+  </div>
+
+  <!-- ACCELERATORS -->
+  <div class="section">
+    <p class="eyebrow">Strategy</p>
+    <p class="section-title">Accelerator Pipeline</p>
+    <p class="section-desc">Program profiles, fit analysis, and the decision timeline for CacheCow's accelerator and fellowship applications.</p>
+    <div class="card-grid">
+      <a class="card" href="accelerators/dashboard.html">
+        <span class="card-badge">Pipeline</span>
+        <p class="card-title">Accelerator Pipeline Dashboard</p>
+        <p class="card-body">Six programs across two decision waves. Program fit matrix and strategic timeline through Fall 2026.</p>
+        <span class="card-arrow">View dashboard &rarr;</span>
+      </a>
+    </div>
+  </div>
+
+  <div class="footer-bar">
+    <span class="footer-brand">CacheCow</span>
+    <span class="footer-note">ForcedField Technologies &middot; Confidential &middot; April 2026</span>
+  </div>
+
+</div>
+</body>
+</html>

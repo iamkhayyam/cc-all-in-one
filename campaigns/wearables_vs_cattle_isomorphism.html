@@ -1,0 +1,353 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CacheCow | Wearables vs Cattle Isomorphism</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Mono:wght@400;500&family=Instrument+Sans:wght@400;500;600&display=swap');
+  :root {
+    --ff-gold: #C8963A;
+    --ff-gold-light: #F0D49A;
+    --ff-green: #2D6A4F;
+    --ff-green-light: #D8F3DC;
+    --ff-teal: #1D9E75;
+    --ff-cream: #FAFAF7;
+    --ff-dark: #1C1C1A;
+    --ff-mid: #4A4A46;
+    --ff-border: rgba(0,0,0,0.08);
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Instrument Sans', sans-serif; }
+  .page { padding: 2rem 1.5rem; background: transparent; max-width: 900px; }
+
+  .eyebrow { font-family: 'DM Mono', monospace; font-size: 11px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--color-text-secondary); margin-bottom: 8px; }
+  .headline { font-family: 'DM Serif Display', serif; font-size: 28px; font-weight: 400; color: var(--color-text-primary); line-height: 1.2; margin-bottom: 6px; }
+  .subhead { font-size: 14px; color: var(--color-text-secondary); line-height: 1.6; margin-bottom: 2rem; }
+
+  .section-label { font-family: 'DM Mono', monospace; font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--color-text-secondary); margin-bottom: 12px; padding-bottom: 6px; border-bottom: 0.5px solid var(--color-border-tertiary); }
+
+  /* Mirror table */
+  .mirror-grid { display: grid; grid-template-columns: 1fr 48px 1fr; gap: 0; margin-bottom: 2rem; }
+  .mirror-col { }
+  .mirror-header { padding: 10px 14px; font-size: 11px; font-family: 'DM Mono', monospace; letter-spacing: 0.08em; text-transform: uppercase; }
+  .mirror-header.human { background: #E6F1FB; color: #185FA5; border-radius: var(--border-radius-md) var(--border-radius-md) 0 0; }
+  .mirror-header.cattle { background: #EAF3DE; color: #3B6D11; border-radius: var(--border-radius-md) var(--border-radius-md) 0 0; }
+  .mirror-row { display: contents; }
+  .mirror-cell { padding: 9px 14px; font-size: 13px; line-height: 1.5; border-bottom: 0.5px solid var(--color-border-tertiary); color: var(--color-text-primary); }
+  .mirror-cell.human { background: #f4f9ff; }
+  .mirror-cell.cattle { background: #f4faf4; }
+  .mirror-axis { display: flex; align-items: center; justify-content: center; padding: 9px 0; border-bottom: 0.5px solid var(--color-border-tertiary); }
+  .mirror-axis-label { font-family: 'DM Mono', monospace; font-size: 9px; letter-spacing: 0.05em; color: var(--color-text-secondary); writing-mode: vertical-rl; text-orientation: mixed; transform: rotate(180deg); }
+  .mirror-axis.header { background: var(--color-background-secondary); font-size: 9px; font-family: 'DM Mono', monospace; color: var(--color-text-secondary); border-radius: 0; }
+  .mirror-advantage { padding: 9px 14px; font-size: 12px; color: #3B6D11; background: #EAF3DE; font-weight: 500; border-bottom: 0.5px solid var(--color-border-tertiary); }
+  .mirror-neutral { padding: 9px 14px; font-size: 12px; color: #185FA5; background: #E6F1FB; border-bottom: 0.5px solid var(--color-border-tertiary); }
+
+  /* Competitor cards */
+  .competitor-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 12px; margin-bottom: 2rem; }
+  .comp-card { background: var(--color-background-primary); border: 0.5px solid var(--color-border-tertiary); border-radius: var(--border-radius-lg); padding: 1rem; }
+  .comp-card.cachcow { border: 2px solid #2D6A4F; }
+  .comp-name { font-size: 13px; font-weight: 500; color: var(--color-text-primary); margin-bottom: 2px; }
+  .comp-parent { font-size: 11px; color: var(--color-text-secondary); margin-bottom: 10px; }
+  .comp-badge { display: inline-block; font-size: 10px; font-family: 'DM Mono', monospace; padding: 2px 8px; border-radius: 4px; margin-bottom: 10px; }
+  .badge-legacy { background: #F1EFE8; color: #5F5E5A; }
+  .badge-emerging { background: #FAEEDA; color: #854F0B; }
+  .badge-platform { background: #EAF3DE; color: #27500A; }
+  .comp-stat { font-size: 12px; color: var(--color-text-secondary); line-height: 1.7; }
+  .comp-stat strong { color: var(--color-text-primary); font-weight: 500; }
+  .featured-badge { background: #EAF3DE; color: #27500A; font-size: 11px; padding: 3px 10px; border-radius: 4px; font-family: 'DM Mono', monospace; display: inline-block; margin-bottom: 8px; letter-spacing: 0.05em; }
+
+  /* Revenue chart section */
+  .chart-container { position: relative; width: 100%; height: 280px; margin-bottom: 2rem; }
+
+  /* Scale cards */
+  .scale-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 2rem; }
+  .scale-card { background: var(--color-background-secondary); border-radius: var(--border-radius-md); padding: 1rem; }
+  .scale-number { font-family: 'DM Serif Display', serif; font-size: 26px; color: var(--color-text-primary); }
+  .scale-label { font-size: 12px; color: var(--color-text-secondary); margin-top: 2px; line-height: 1.5; }
+  .scale-note { font-size: 11px; font-family: 'DM Mono', monospace; color: var(--color-text-secondary); margin-top: 6px; }
+
+  /* Moat section */
+  .moat-row { display: grid; grid-template-columns: 140px 1fr; gap: 12px; margin-bottom: 10px; align-items: start; }
+  .moat-label { font-size: 12px; font-family: 'DM Mono', monospace; color: var(--color-text-secondary); padding-top: 2px; }
+  .moat-bar-wrap { position: relative; }
+  .moat-bar-bg { height: 24px; background: var(--color-background-secondary); border-radius: 4px; overflow: hidden; }
+  .moat-bar-fill { height: 100%; border-radius: 4px; display: flex; align-items: center; padding-left: 8px; font-size: 11px; font-weight: 500; }
+  .bar-human { background: #B5D4F4; color: #185FA5; }
+  .bar-cattle { background: #C0DD97; color: #3B6D11; }
+  .moat-note { font-size: 11px; color: var(--color-text-secondary); margin-top: 3px; }
+
+  /* CTA */
+  .thesis-box { background: var(--color-background-secondary); border-radius: var(--border-radius-lg); padding: 1.25rem 1.5rem; border-left: 3px solid #2D6A4F; margin-top: 1rem; }
+  .thesis-text { font-family: 'DM Serif Display', serif; font-size: 17px; font-style: italic; color: var(--color-text-primary); line-height: 1.5; }
+  .thesis-sub { font-size: 12px; color: var(--color-text-secondary); margin-top: 8px; }
+
+  .section { margin-bottom: 2.5rem; }
+
+  .divider { border: none; border-top: 0.5px solid var(--color-border-tertiary); margin: 2rem 0; }
+
+  .footnote { font-size: 11px; color: var(--color-text-secondary); font-family: 'DM Mono', monospace; }
+</style>
+
+<h2 class="sr-only">Competitive landscape isomorphism: human wearables (Oura, WHOOP, Function Health) mapped to cattle intelligence (CacheCow vs. Merck, Zoetis, Halter)</h2>
+
+<div class="page">
+
+  <div class="eyebrow">ForcedField / CacheCow — Competitive Intelligence</div>
+  <div class="headline">The Wearables Isomorphism</div>
+  <div class="subhead">Human health monitoring built three $10B companies. Cattle intelligence is the same market — larger TAM, higher B2B LTV, near-zero churn, and no Oura yet.</div>
+
+  <hr class="divider">
+
+  <div class="section">
+    <div class="section-label">Structural mirror — human vs. cattle</div>
+    <div class="mirror-grid">
+      <div class="mirror-header human">Human wearables</div>
+      <div style="background:var(--color-background-secondary); border-radius:0; display:flex; align-items:center; justify-content:center; font-size:9px; font-family:'DM Mono',monospace; color:var(--color-text-secondary); padding:10px 0; border-bottom:0.5px solid var(--color-border-tertiary);"></div>
+      <div class="mirror-header cattle">Cattle intelligence</div>
+
+      <div class="mirror-cell human">Ring / band / blood panel</div>
+      <div class="mirror-axis"><span class="mirror-axis-label">Device</span></div>
+      <div class="mirror-cell cattle">Ear tag + bioelectric collar</div>
+
+      <div class="mirror-cell human">5.5M (Oura) · 1.5M (WHOOP) · 200K (Function)</div>
+      <div class="mirror-axis"><span class="mirror-axis-label">Scale</span></div>
+      <div class="mirror-cell cattle">94M cattle (North America) · 1B+ globally</div>
+
+      <div class="mirror-cell human">$70 – $360 / user / year</div>
+      <div class="mirror-axis"><span class="mirror-axis-label">ARPU</span></div>
+      <div class="mirror-advantage">$122K – $1.2M / ranch / year</div>
+
+      <div class="mirror-cell human">Consumer subscription — easy to cancel</div>
+      <div class="mirror-axis"><span class="mirror-axis-label">Churn</span></div>
+      <div class="mirror-advantage">Multi-year B2B contract — structurally near-zero</div>
+
+      <div class="mirror-cell human">Sleep, HRV, biomarkers, activity</div>
+      <div class="mirror-axis"><span class="mirror-axis-label">Data</span></div>
+      <div class="mirror-cell cattle">Movement, health, breeding, grazing, feed efficiency</div>
+
+      <div class="mirror-cell human">Medium — new device / new app</div>
+      <div class="mirror-axis"><span class="mirror-axis-label">Switching cost</span></div>
+      <div class="mirror-advantage">Extreme — historical baselines, breeding records, 5–20yr contracts</div>
+
+      <div class="mirror-cell human">$11B (Oura) · $10B (WHOOP) · undisclosed (Function)</div>
+      <div class="mirror-axis"><span class="mirror-axis-label">Valuation</span></div>
+      <div class="mirror-advantage">Incumbent ceiling: Zoetis $9B rev, Merck Animal $6B rev. Untapped platform opportunity.</div>
+
+      <div class="mirror-neutral">Salesforce for humans exists (Apple Health, Google Fit)</div>
+      <div class="mirror-axis"><span class="mirror-axis-label">Platform gap</span></div>
+      <div class="mirror-advantage">No Salesforce for cattle exists. CacheCow is the first.</div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-label">Competitive landscape — cattle monitoring incumbents</div>
+    <div class="competitor-grid">
+
+      <div class="comp-card">
+        <div class="comp-name">Allflex / SenseHub</div>
+        <div class="comp-parent">Merck Animal Health</div>
+        <div><span class="comp-badge badge-legacy">Legacy hardware</span></div>
+        <div class="comp-stat">
+          <strong>$160–200</strong> / animal hardware<br>
+          <strong>$40–44</strong> / animal / yr service<br>
+          <strong>85–90%</strong> heat detection accuracy<br>
+          <strong>18–24 mo</strong> payback period<br>
+          No AI layer. Battery replacement yr 3–4.
+        </div>
+      </div>
+
+      <div class="comp-card">
+        <div class="comp-name">SCR Dairy</div>
+        <div class="comp-parent">Merck Animal Health</div>
+        <div><span class="comp-badge badge-legacy">Legacy hardware</span></div>
+        <div class="comp-stat">
+          <strong>$180–250</strong> / animal hardware<br>
+          <strong>$48–72</strong> / animal / yr service<br>
+          Rumination + activity tracking<br>
+          <strong>20–30 mo</strong> payback period<br>
+          No predictive AI. Point solution.
+        </div>
+      </div>
+
+      <div class="comp-card">
+        <div class="comp-name">Halter</div>
+        <div class="comp-parent">NZ startup (raised $75M)</div>
+        <div><span class="comp-badge badge-emerging">Emerging</span></div>
+        <div class="comp-stat">
+          <strong>$100–150</strong> / cow / yr<br>
+          GPS + solar collar<br>
+          Virtual fencing only<br>
+          Single-purpose — no health, no breeding, no AI mesh<br>
+          No platform architecture.
+        </div>
+      </div>
+
+      <div class="comp-card">
+        <div class="comp-name">Quantified Ag</div>
+        <div class="comp-parent">Standalone</div>
+        <div><span class="comp-badge badge-emerging">Niche</span></div>
+        <div class="comp-stat">
+          <strong>$50–75</strong> / animal hardware<br>
+          Temperature monitoring only<br>
+          <strong>$10–20K</strong> platform license / yr<br>
+          24–36 mo payback<br>
+          No movement intelligence.
+        </div>
+      </div>
+
+      <div class="comp-card cachcow">
+        <div class="featured-badge">CacheCow</div>
+        <div class="comp-name">ForcedField</div>
+        <div class="comp-parent">Platform-first architecture</div>
+        <div><span class="comp-badge badge-platform">Intelligence platform</span></div>
+        <div class="comp-stat">
+          <strong>$0</strong> hardware upfront<br>
+          <strong>$122K–$1.2M</strong> / ranch / yr<br>
+          9-component: UWB + bioelectric + AI mesh<br>
+          <strong>26 TOPS</strong> on-device processing<br>
+          5–20yr locked contracts. Data flywheel.
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-label">Revenue comparison — 2,000 head ranch · 5 years</div>
+    <div class="chart-container">
+      <canvas id="revenueChart" role="img" aria-label="Bar chart comparing 5-year customer net benefit for Allflex, SCR Dairy, Halter, and CacheCow on a 2000-head ranch. CacheCow delivers $2.275M net benefit versus losses or minimal gains for incumbents.">CacheCow delivers $2.275M net benefit vs. competitors who deliver $0.4M–$1.2M or negative net benefit at comparable ranch size.</canvas>
+    </div>
+    <div class="footnote">* Net benefit = cumulative value created minus total cost of ownership over 5 years on a 2,000-head operation. CacheCow figure based on $700K/yr value creation at 35% capture rate with $0 upfront hardware cost.</div>
+  </div>
+
+  <hr class="divider">
+
+  <div class="section">
+    <div class="section-label">Why the cattle moat is deeper than consumer wearables</div>
+
+    <div class="moat-row">
+      <div class="moat-label">Switching cost</div>
+      <div class="moat-bar-wrap">
+        <div style="display:grid; grid-template-columns:1fr 1fr; gap:6px;">
+          <div>
+            <div style="font-size:10px; color:var(--color-text-secondary); margin-bottom:3px;">Human (Oura/WHOOP)</div>
+            <div class="moat-bar-bg"><div class="moat-bar-fill bar-human" style="width:35%;">Low–Med</div></div>
+          </div>
+          <div>
+            <div style="font-size:10px; color:var(--color-text-secondary); margin-bottom:3px;">Cattle (CacheCow)</div>
+            <div class="moat-bar-bg"><div class="moat-bar-fill bar-cattle" style="width:90%;">Extreme</div></div>
+          </div>
+        </div>
+        <div class="moat-note">5–20yr contracts + historical baselines make switching economically irrational</div>
+      </div>
+    </div>
+
+    <div class="moat-row">
+      <div class="moat-label">Data network effect</div>
+      <div class="moat-bar-wrap">
+        <div style="display:grid; grid-template-columns:1fr 1fr; gap:6px;">
+          <div>
+            <div style="font-size:10px; color:var(--color-text-secondary); margin-bottom:3px;">Human</div>
+            <div class="moat-bar-bg"><div class="moat-bar-fill bar-human" style="width:60%;">Moderate</div></div>
+          </div>
+          <div>
+            <div style="font-size:10px; color:var(--color-text-secondary); margin-bottom:3px;">Cattle</div>
+            <div class="moat-bar-bg"><div class="moat-bar-fill bar-cattle" style="width:85%;">Strong</div></div>
+          </div>
+        </div>
+        <div class="moat-note">More ranches = better disease prediction models for all ranches on the network</div>
+      </div>
+    </div>
+
+    <div class="moat-row">
+      <div class="moat-label">B2B vs. consumer</div>
+      <div class="moat-bar-wrap">
+        <div style="display:grid; grid-template-columns:1fr 1fr; gap:6px;">
+          <div>
+            <div style="font-size:10px; color:var(--color-text-secondary); margin-bottom:3px;">Consumer churn risk</div>
+            <div class="moat-bar-bg"><div class="moat-bar-fill bar-human" style="width:55%;">High</div></div>
+          </div>
+          <div>
+            <div style="font-size:10px; color:var(--color-text-secondary); margin-bottom:3px;">Ranch churn risk</div>
+            <div class="moat-bar-bg"><div class="moat-bar-fill bar-cattle" style="width:8%;">~0</div></div>
+          </div>
+        </div>
+        <div class="moat-note">Ranches don't cancel because they had a bad week. Cattle don't sleep in a drawer.</div>
+      </div>
+    </div>
+
+    <div class="moat-row">
+      <div class="moat-label">Path to $1B ARR</div>
+      <div class="moat-bar-wrap">
+        <div style="display:grid; grid-template-columns:1fr 1fr; gap:6px;">
+          <div>
+            <div style="font-size:10px; color:var(--color-text-secondary); margin-bottom:3px;">Human: devices needed</div>
+            <div style="font-size:20px; font-family:'DM Serif Display',serif; color:#185FA5;">5,500,000</div>
+            <div style="font-size:10px; color:var(--color-text-secondary);">rings at ~$182 blended ARPU</div>
+          </div>
+          <div>
+            <div style="font-size:10px; color:var(--color-text-secondary); margin-bottom:3px;">Cattle: ranches needed</div>
+            <div style="font-size:20px; font-family:'DM Serif Display',serif; color:#2D6A4F;">~4,000</div>
+            <div style="font-size:10px; color:var(--color-text-secondary);">at $250K avg contract — 0.4% of North America</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="thesis-box">
+    <div class="thesis-text">"Oura needed 5.5 million customers to reach $1B. CacheCow needs 4,000 ranches. The cattle market is not a smaller version of Oura — it is a structurally superior business."</div>
+    <div class="thesis-sub">ForcedField / CacheCow competitive thesis · April 2026</div>
+  </div>
+
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<script>
+const ctx = document.getElementById('revenueChart').getContext('2d');
+new Chart(ctx, {
+  type: 'bar',
+  data: {
+    labels: ['Allflex / SenseHub', 'SCR Dairy', 'Halter', 'CacheCow'],
+    datasets: [{
+      label: '5-yr customer net benefit ($USD)',
+      data: [900000, 840000, 350000, 2275000],
+      backgroundColor: ['#B4B2A9', '#B4B2A9', '#FAC775', '#63992254'],
+      borderColor: ['#888780', '#888780', '#BA7517', '#2D6A4F'],
+      borderWidth: 1.5,
+      borderRadius: 4,
+    }]
+  },
+  options: {
+    responsive: true,
+    maintainAspectRatio: false,
+    plugins: {
+      legend: { display: false },
+      tooltip: {
+        callbacks: {
+          label: (ctx) => ' Net benefit: $' + ctx.raw.toLocaleString()
+        }
+      }
+    },
+    scales: {
+      x: {
+        ticks: { font: { size: 12 }, color: '#888780', autoSkip: false },
+        grid: { display: false },
+        border: { display: false }
+      },
+      y: {
+        ticks: {
+          callback: v => '$' + (v / 1000000).toFixed(1) + 'M',
+          font: { size: 11 },
+          color: '#888780'
+        },
+        grid: { color: 'rgba(0,0,0,0.05)' },
+        border: { display: false },
+        min: 0,
+        max: 2600000
+      }
+    }
+  }
+});
+</script>

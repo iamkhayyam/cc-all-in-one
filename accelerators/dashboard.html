@@ -1,0 +1,574 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Accelerator Pipeline — ForcedField Technologies</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,600;1,400&family=DM+Sans:wght@300;400;500&family=Libre+Baskerville:ital,wght@0,400;1,400&display=swap');
+
+:root {
+  --color-text-primary: #1a1a18;
+  --color-text-secondary: #5a5a56;
+  --color-text-tertiary: #9a9a94;
+  --color-background-primary: #ffffff;
+  --color-background-secondary: #f5f4f0;
+  --color-border-tertiary: rgba(26,26,24,0.12);
+  --color-border-secondary: rgba(26,26,24,0.25);
+  --color-border-primary: rgba(26,26,24,0.4);
+  --border-radius-md: 8px;
+  --border-radius-lg: 12px;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --color-text-primary: #f0efe8;
+    --color-text-secondary: #a8a89e;
+    --color-text-tertiary: #6a6a62;
+    --color-background-primary: #1a1a18;
+    --color-background-secondary: #242420;
+    --color-border-tertiary: rgba(240,239,232,0.1);
+    --color-border-secondary: rgba(240,239,232,0.2);
+    --color-border-primary: rgba(240,239,232,0.35);
+  }
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html { background: var(--color-background-primary); }
+body {
+  font-family: 'DM Sans', sans-serif;
+  color: var(--color-text-primary);
+  background: var(--color-background-primary);
+  -webkit-font-smoothing: antialiased;
+}
+
+.app { max-width: 860px; margin: 0 auto; }
+
+.serif { font-family: 'Playfair Display', Georgia, serif; }
+.eyebrow { font-size: 11px; font-weight: 500; letter-spacing: 0.12em; text-transform: uppercase; color: var(--color-text-tertiary); margin-bottom: 1rem; }
+
+.hero { padding: 3.5rem 2rem 2.5rem; border-bottom: 0.5px solid var(--color-border-tertiary); }
+.hero h1 { font-family: 'Playfair Display', Georgia, serif; font-size: clamp(2rem, 5vw, 3rem); font-weight: 600; line-height: 1.15; max-width: 660px; margin-bottom: 1.25rem; }
+.hero h1 em { font-style: italic; color: var(--color-text-secondary); }
+.hero p.lead { font-family: 'Libre Baskerville', Georgia, serif; font-size: 18px; font-weight: 400; line-height: 1.8; max-width: 560px; color: var(--color-text-secondary); }
+
+.section { padding: 2.5rem 2rem; border-bottom: 0.5px solid var(--color-border-tertiary); }
+.section-title { font-family: 'Playfair Display', Georgia, serif; font-size: 1.6rem; font-weight: 600; line-height: 1.3; max-width: 600px; margin-bottom: 1rem; }
+.section-body { font-family: 'Libre Baskerville', Georgia, serif; font-size: 17px; font-weight: 400; line-height: 1.8; color: var(--color-text-secondary); max-width: 580px; }
+
+/* ── program cards ── */
+.program-card { border: 0.5px solid var(--color-border-tertiary); border-radius: var(--border-radius-lg); overflow: hidden; margin-top: 2rem; }
+.program-card:first-of-type { margin-top: 1.75rem; }
+.program-header { padding: 1.5rem 1.75rem 1.25rem; border-bottom: 0.5px solid var(--color-border-tertiary); }
+.program-meta { display: flex; align-items: baseline; gap: 1rem; flex-wrap: wrap; margin-bottom: 0.5rem; }
+.program-name { font-family: 'Playfair Display', Georgia, serif; font-size: 1.35rem; font-weight: 600; line-height: 1.2; }
+.program-name a { color: inherit; text-decoration: none; border-bottom: 1px solid rgba(0,0,0,0.2); transition: border-color 0.2s; }
+.program-name a:hover { border-bottom-color: currentColor; }
+.program-org { font-size: 12px; color: var(--color-text-tertiary); letter-spacing: 0.04em; }
+.date-row { display: flex; gap: 1.5rem; margin-top: 0.75rem; flex-wrap: wrap; }
+.date-pill { display: inline-flex; align-items: center; gap: 6px; font-size: 11px; font-weight: 500; letter-spacing: 0.06em; text-transform: uppercase; }
+.date-pill .dot { width: 6px; height: 6px; border-radius: 50%; display: inline-block; flex-shrink: 0; }
+.dot-amber { background: #BA7517; }
+.dot-coral { background: #D85A30; }
+.dot-teal  { background: #1D9E75; }
+.date-pill .label { color: var(--color-text-tertiary); }
+.date-pill .value { color: var(--color-text-secondary); }
+
+.program-body { padding: 1.5rem 1.75rem; display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; }
+@media (max-width: 600px) { .program-body { grid-template-columns: 1fr; } }
+
+.prog-col-label { font-size: 10px; font-weight: 500; letter-spacing: 0.1em; text-transform: uppercase; color: var(--color-text-tertiary); margin-bottom: 0.6rem; }
+.prog-col-body { font-family: 'Libre Baskerville', Georgia, serif; font-size: 15px; line-height: 1.75; color: var(--color-text-secondary); font-weight: 400; }
+.prog-col-body em { font-style: italic; color: var(--color-text-primary); }
+
+.program-offer { padding: 1rem 1.75rem; background: var(--color-background-secondary); border-top: 0.5px solid var(--color-border-tertiary); font-size: 13px; color: var(--color-text-secondary); }
+.program-offer strong { color: var(--color-text-primary); font-weight: 500; }
+
+/* ── wave divider ── */
+.wave-divider { padding: 1.75rem 2rem 0; }
+.wave-label { font-size: 11px; font-weight: 500; letter-spacing: 0.12em; text-transform: uppercase; padding-bottom: 0.75rem; border-bottom: 0.5px solid var(--color-border-tertiary); }
+.wave-label.amber { color: #BA7517; border-color: rgba(186,117,23,0.3); }
+.wave-label.coral { color: #D85A30; border-color: rgba(216,90,48,0.3); }
+
+/* ── conv table (fit matrix) ── */
+.conv-table { margin-top: 1.75rem; display: flex; flex-direction: column; gap: 0; }
+.conv-header { display: grid; grid-template-columns: 2fr repeat(5, 1fr); background: var(--color-background-secondary); border-bottom: 0.5px solid var(--color-border-secondary); border-radius: var(--border-radius-md) var(--border-radius-md) 0 0; overflow: hidden; }
+.conv-header-cell { padding: 0.6rem 0.75rem; font-size: 10px; font-weight: 500; letter-spacing: 0.09em; text-transform: uppercase; color: var(--color-text-tertiary); border-right: 0.5px solid var(--color-border-tertiary); }
+.conv-header-cell:last-child { border-right: none; }
+.matrix-row { display: grid; grid-template-columns: 2fr repeat(5, 1fr); border-bottom: 0.5px solid var(--color-border-tertiary); }
+.matrix-row:last-child { border-bottom: none; }
+.matrix-cell { padding: 0.9rem 0.75rem; font-size: 13px; line-height: 1.4; border-right: 0.5px solid var(--color-border-tertiary); display: flex; align-items: center; }
+.matrix-cell:last-child { border-right: none; }
+.matrix-name { font-weight: 500; color: var(--color-text-primary); font-size: 13px; }
+.matrix-name small { display: block; font-size: 11px; font-weight: 400; color: var(--color-text-tertiary); margin-top: 2px; }
+.pill { display: inline-block; padding: 3px 9px; border-radius: 20px; font-size: 10px; font-weight: 500; letter-spacing: 0.05em; }
+.pill-strong { background: #E1F5EE; color: #0F6E56; }
+.pill-mod    { background: #E6F1FB; color: #185FA5; }
+.pill-part   { background: #F1EFE8; color: #8A8A82; }
+@media (prefers-color-scheme: dark) {
+  .pill-strong { background: rgba(29,158,117,0.18); color: #5DCAA5; }
+  .pill-mod    { background: rgba(24,95,165,0.18); color: #85B7EB; }
+  .pill-part   { background: rgba(136,135,128,0.15); color: #888780; }
+}
+
+/* ── layer bars ── */
+.layer-bar { display: grid; grid-template-columns: 32px 1fr; gap: 14px; padding: 1.5rem 0; border-bottom: 0.5px solid var(--color-border-tertiary); align-items: start; }
+.layer-bar:last-child { border-bottom: none; }
+.layer-num { font-family: 'Playfair Display', Georgia, serif; font-size: 1.8rem; font-weight: 600; color: var(--color-text-tertiary); line-height: 1; }
+.layer-title { font-size: 15px; font-weight: 500; margin-bottom: 6px; }
+.layer-sub { font-family: 'Libre Baskerville', Georgia, serif; font-size: 15px; color: var(--color-text-secondary); line-height: 1.75; font-weight: 400; }
+
+/* ── highlight card ── */
+.highlight-card { background: var(--color-background-secondary); border-radius: var(--border-radius-lg); padding: 2rem; margin-top: 1.5rem; }
+.hl-headline { font-family: 'Playfair Display', Georgia, serif; font-size: 1.4rem; font-weight: 600; line-height: 1.3; max-width: 540px; margin-bottom: 0.75rem; }
+.hl-body { font-family: 'Libre Baskerville', Georgia, serif; font-size: 16px; color: var(--color-text-secondary); line-height: 1.75; max-width: 500px; font-weight: 400; }
+
+/* ── timeline ── */
+.timeline { margin-top: 1.75rem; border: 0.5px solid var(--color-border-tertiary); border-radius: var(--border-radius-lg); overflow: hidden; }
+.tl-header { display: grid; grid-template-columns: 1.1fr 1.6fr 1.1fr 1.4fr; background: var(--color-background-secondary); border-bottom: 0.5px solid var(--color-border-secondary); }
+.tl-hcell { padding: 0.6rem 1rem; font-size: 10px; font-weight: 500; letter-spacing: 0.09em; text-transform: uppercase; color: var(--color-text-tertiary); border-right: 0.5px solid var(--color-border-tertiary); }
+.tl-hcell:last-child { border-right: none; }
+.tl-row { display: grid; grid-template-columns: 1.1fr 1.6fr 1.1fr 1.4fr; border-bottom: 0.5px solid var(--color-border-tertiary); }
+.tl-row:last-child { border-bottom: none; }
+.tl-row.bg-amber { background: rgba(250,238,218,0.5); }
+.tl-row.bg-coral { background: rgba(250,236,231,0.5); }
+.tl-row.bg-teal  { background: rgba(225,245,238,0.5); }
+@media (prefers-color-scheme: dark) {
+  .tl-row.bg-amber { background: rgba(186,117,23,0.08); }
+  .tl-row.bg-coral { background: rgba(216,90,48,0.08); }
+  .tl-row.bg-teal  { background: rgba(29,158,117,0.08); }
+}
+.tl-cell { padding: 0.75rem 1rem; font-size: 13px; line-height: 1.5; border-right: 0.5px solid var(--color-border-tertiary); color: var(--color-text-secondary); }
+.tl-cell:last-child { border-right: none; font-size: 12px; color: var(--color-text-tertiary); }
+.tl-cell.date { font-weight: 500; color: var(--color-text-primary); font-size: 12px; }
+.tl-cell.program-col { font-weight: 500; color: var(--color-text-primary); }
+.tl-cell.event { }
+
+/* ── stat grid ── */
+.stat-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-top: 2rem; }
+@media (max-width: 480px) { .stat-grid { grid-template-columns: 1fr; } }
+.stat { background: var(--color-background-secondary); border-radius: var(--border-radius-md); padding: 1.25rem 1rem; }
+.stat-n { font-family: 'Playfair Display', Georgia, serif; font-size: 2.2rem; font-weight: 600; line-height: 1; margin-bottom: 6px; }
+.stat-l { font-size: 12px; color: var(--color-text-secondary); line-height: 1.4; }
+
+/* ── footer ── */
+.footer-bar { padding: 1.5rem 2rem; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px; border-top: 0.5px solid var(--color-border-tertiary); }
+.footer-brand { font-family: 'Playfair Display', Georgia, serif; font-size: 1.1rem; font-weight: 600; }
+.footer-note { font-size: 12px; color: var(--color-text-tertiary); }
+
+@media (max-width: 560px) {
+  .hero { padding: 2.5rem 1.25rem 2rem; }
+  .section { padding: 2rem 1.25rem; }
+  .wave-divider { padding: 1.5rem 1.25rem 0; }
+  .conv-header, .matrix-row { grid-template-columns: 1fr; }
+  .tl-header, .tl-row { grid-template-columns: 1fr 1fr; }
+  .tl-hcell:nth-child(3), .tl-hcell:nth-child(4),
+  .tl-cell:nth-child(3), .tl-cell:nth-child(4) { display: none; }
+  .footer-bar { padding: 1.25rem; }
+}
+</style>
+</head>
+<body>
+<div class="app">
+
+  <!-- HERO -->
+  <div class="hero">
+    <p class="eyebrow">ForcedField Technologies &nbsp;·&nbsp; Accelerator Pipeline Report &nbsp;·&nbsp; April 2026</p>
+    <h1>Six programs. Two decision waves.<br><em>One window.</em></h1>
+    <p class="lead">ForcedField and CacheCow have applied to six accelerators and fellowships across Canada, Europe, and the US. Decisions arrive in April and May 2026. This document profiles each program, maps the thesis fit, and lays out the decision calendar.</p>
+  </div>
+
+  <!-- SECTION 5: PROGRAM PROFILES -->
+  <div class="section">
+    <p class="eyebrow">Section 5 — Accelerator pipeline</p>
+    <p class="section-title">The programs. What they are, and why we fit.</p>
+    <p class="section-body">Each program was selected because it addresses a specific gap: capital, compute, credibility, or ecosystem. Together they form a portfolio, not a lottery.</p>
+
+    <!-- APRIL WAVE -->
+    <div class="wave-divider" style="padding-left:0; padding-right:0; padding-top: 2rem;">
+      <p class="wave-label amber">April decision wave</p>
+    </div>
+
+    <!-- MassChallenge -->
+    <div class="program-card">
+      <div class="program-header">
+        <div class="program-meta">
+          <span class="program-name"><a href="https://masschallenge.org/programs-switzerland" target="_blank" rel="noopener">MassChallenge Switzerland</a></span>
+          <span class="program-org">Global impact accelerator &nbsp;·&nbsp; Lausanne, Switzerland</span>
+        </div>
+        <div class="date-row">
+          <span class="date-pill"><span class="dot dot-amber"></span><span class="label">Decision:</span>&nbsp;<span class="value">April 2026</span></span>
+          <span class="date-pill"><span class="dot dot-teal"></span><span class="label">Cohort begins:</span>&nbsp;<span class="value">June 2026</span></span>
+          <span class="date-pill"><span class="label">Location:</span>&nbsp;<span class="value">Switzerland</span></span>
+        </div>
+      </div>
+      <div class="program-body">
+        <div>
+          <p class="prog-col-label">About the program</p>
+          <p class="prog-col-body">MassChallenge Switzerland is one of the world's most prestigious zero-equity accelerators, operating globally from its Lausanne base. The program focuses on high-impact startups across health, food &amp; ag, energy, and advanced technology — with a strong corporate partner network including Nestlé, Givaudan, and Helvetia.</p>
+        </div>
+        <div>
+          <p class="prog-col-label">Why ForcedField fits</p>
+          <p class="prog-col-body">CacheCow's agricultural intelligence platform and UltraBand's health monitoring capabilities align directly with the food/ag and health tracks. The Swiss location provides a gateway into <em>European enterprise partnerships</em> and CE marking regulatory pathways — both required for international scaling.</p>
+        </div>
+      </div>
+      <div class="program-offer"><strong>What they offer:</strong> Zero equity. Mentorship, corporate partnership access, $1M+ prize pool.</div>
+    </div>
+
+    <!-- Scale Up Calgary -->
+    <div class="program-card">
+      <div class="program-header">
+        <div class="program-meta">
+          <span class="program-name"><a href="https://www.scaleupcanada.org/calgary50" target="_blank" rel="noopener">Scale Up Calgary 50</a></span>
+          <span class="program-org">Scale Up Canada &nbsp;·&nbsp; Calgary, Alberta</span>
+        </div>
+        <div class="date-row">
+          <span class="date-pill"><span class="dot dot-amber"></span><span class="label">Decision:</span>&nbsp;<span class="value">April 2026</span></span>
+          <span class="date-pill"><span class="dot dot-teal"></span><span class="label">Cohort begins:</span>&nbsp;<span class="value">May 2026</span></span>
+          <span class="date-pill"><span class="label">Location:</span>&nbsp;<span class="value">Calgary, AB</span></span>
+        </div>
+      </div>
+      <div class="program-body">
+        <div>
+          <p class="prog-col-label">About the program</p>
+          <p class="prog-col-body">Scale Up Canada's Calgary 50 program selects 50 high-growth Alberta companies for an intensive scaling program, providing peer cohort support, executive mentorship, and connections to Alberta's innovation funding ecosystem.</p>
+        </div>
+        <div>
+          <p class="prog-col-label">Why CacheCow fits</p>
+          <p class="prog-col-body">CacheCow Agriculture Inc. is incorporated in Alberta and building its ranch pilot programs across the province. This program provides the home-market anchor: direct access to <em>Alberta Innovates, IRAP networks, and the provincial agricultural ecosystem</em> that are central to CacheCow's non-dilutive funding strategy.</p>
+        </div>
+      </div>
+      <div class="program-offer"><strong>What they offer:</strong> Scaling program access, government network, peer cohort. No equity taken.</div>
+    </div>
+
+    <!-- 2048 Ventures -->
+    <div class="program-card">
+      <div class="program-header">
+        <div class="program-meta">
+          <span class="program-name"><a href="https://2048ventures.notion.site/2048-ventures-pitch-competition-2026" target="_blank" rel="noopener">2048 Ventures Pitch Competition</a></span>
+          <span class="program-org">2048 Ventures &nbsp;·&nbsp; New York, NY</span>
+        </div>
+        <div class="date-row">
+          <span class="date-pill"><span class="dot dot-amber"></span><span class="label">Decision:</span>&nbsp;<span class="value">April 2026</span></span>
+          <span class="date-pill"><span class="dot dot-teal"></span><span class="label">Pitch week:</span>&nbsp;<span class="value">May 27 – June 2, 2026</span></span>
+          <span class="date-pill"><span class="label">Location:</span>&nbsp;<span class="value">New York City</span></span>
+        </div>
+      </div>
+      <div class="program-body">
+        <div>
+          <p class="prog-col-label">About the program</p>
+          <p class="prog-col-body">2048 Ventures is a pre-seed VC firm focused on diverse founders and frontier technology. Their pitch competition brings selected founders to New York for a week of investor meetings, workshops, and a final pitch to the investment committee.</p>
+        </div>
+        <div>
+          <p class="prog-col-label">Why ForcedField fits</p>
+          <p class="prog-col-body">The most immediate capital conversion opportunity in the pipeline. 2048's focus on frontier hardware and AI aligns with the 9-component architecture. A strong pitch week positions ForcedField for a <em>pre-seed round to fund CacheCow pilot deployments</em> and UltraBand prototype completion.</p>
+        </div>
+      </div>
+      <div class="program-offer"><strong>What they offer:</strong> Investment consideration. Pre-seed VC — potential $250K–$1M check.</div>
+    </div>
+
+    <!-- MAY WAVE -->
+    <div class="wave-divider" style="padding-left:0; padding-right:0; padding-top: 2.5rem;">
+      <p class="wave-label coral">May decision wave</p>
+    </div>
+
+    <!-- Encode -->
+    <div class="program-card">
+      <div class="program-header">
+        <div class="program-meta">
+          <span class="program-name"><a href="https://encode.pillar.vc/the-program" target="_blank" rel="noopener">Encode: AI for Science — Cohort 2</a></span>
+          <span class="program-org">Pillar VC × ARIA &nbsp;·&nbsp; United Kingdom (1-year fellowship)</span>
+        </div>
+        <div class="date-row">
+          <span class="date-pill"><span class="dot dot-coral"></span><span class="label">Decision:</span>&nbsp;<span class="value">May 2026</span></span>
+          <span class="date-pill"><span class="dot dot-teal"></span><span class="label">Cohort begins:</span>&nbsp;<span class="value">September 1, 2026</span></span>
+          <span class="date-pill"><span class="label">Location:</span>&nbsp;<span class="value">UK — visas supported</span></span>
+        </div>
+      </div>
+      <div class="program-body">
+        <div>
+          <p class="prog-col-label">About the program</p>
+          <p class="prog-col-body">Encode is a highly competitive 12-month AI research fellowship backed by Pillar VC and the UK's Advanced Research and Invention Agency (ARIA). Fellows receive a minimum £100K compute budget, competitive salary, travel stipend, healthcare, and pension. IP stays 100% with the founder.</p>
+        </div>
+        <div>
+          <p class="prog-col-label">Why ForcedField fits</p>
+          <p class="prog-col-body">ForcedField's movement intelligence platform is an AI-for-science problem at its core: neuromorphic edge AI applied to biological systems at picowatt power budgets. The Innatera T1 + LiquidAI ESS integration, cross-species movement analysis, and spiking neural network research are <em>exactly the class of work Encode funds.</em> The compute budget directly accelerates the training pipeline. IP retention is non-negotiable — Encode guarantees it.</p>
+        </div>
+      </div>
+      <div class="program-offer"><strong>What they offer:</strong> £100K+ compute budget &nbsp;·&nbsp; competitive salary &nbsp;·&nbsp; full IP retention &nbsp;·&nbsp; Pillar VC investor introductions.</div>
+    </div>
+
+    <!-- PACE -->
+    <div class="program-card">
+      <div class="program-header">
+        <div class="program-meta">
+          <span class="program-name"><a href="https://pacefellows.com/" target="_blank" rel="noopener">PACE Fellows</a></span>
+          <span class="program-org">PACE Program</span>
+        </div>
+        <div class="date-row">
+          <span class="date-pill"><span class="dot dot-coral"></span><span class="label">Decision:</span>&nbsp;<span class="value">May 2026</span></span>
+          <span class="date-pill"><span class="dot dot-teal"></span><span class="label">Cohort:</span>&nbsp;<span class="value">July 6 – August 1, 2026</span></span>
+        </div>
+      </div>
+      <div class="program-body">
+        <div>
+          <p class="prog-col-label">About the program</p>
+          <p class="prog-col-body">PACE Fellows is an intensive 4-week summer fellowship for early-stage founders. The program combines structured curriculum with mentorship from experienced operators and investors, focused on go-to-market strategy and early traction.</p>
+        </div>
+        <div>
+          <p class="prog-col-label">Why ForcedField fits</p>
+          <p class="prog-col-body">The July–August timing bridges the April decision wave and the fall program starts. PACE provides focused go-to-market refinement for <em>CacheCow ranch pilot deployment</em> and UltraBand event strategy — the critical execution work before Series A preparation in Q4 2026.</p>
+        </div>
+      </div>
+      <div class="program-offer"><strong>What they offer:</strong> Intensive mentorship, GTM coaching, investor network access.</div>
+    </div>
+
+    <!-- Google.org -->
+    <div class="program-card">
+      <div class="program-header">
+        <div class="program-meta">
+          <span class="program-name"><a href="https://www.google.org/impact-challenges/ai-science/" target="_blank" rel="noopener">Google.org AI for Science Impact Challenge</a></span>
+          <span class="program-org">Google.org &nbsp;·&nbsp; Global</span>
+        </div>
+        <div class="date-row">
+          <span class="date-pill"><span class="dot dot-coral"></span><span class="label">Decision:</span>&nbsp;<span class="value">May 2026</span></span>
+          <span class="date-pill"><span class="dot dot-teal"></span><span class="label">Cohort begins:</span>&nbsp;<span class="value">Fall 2026</span></span>
+          <span class="date-pill"><span class="label">Location:</span>&nbsp;<span class="value">Global — remote-first</span></span>
+        </div>
+      </div>
+      <div class="program-body">
+        <div>
+          <p class="prog-col-label">About the program</p>
+          <p class="prog-col-body">Google.org's AI for Science challenge provides grant funding and Google infrastructure — Cloud TPUs, Vertex AI, expert support — to organizations using AI to accelerate scientific breakthroughs. Previous cohorts have focused on climate, health, and agriculture.</p>
+        </div>
+        <div>
+          <p class="prog-col-label">Why CacheCow fits</p>
+          <p class="prog-col-body">CacheCow's disease prediction platform is a direct AI-for-science application: deploying neuromorphic edge AI to predict bovine illness <em>3–7 days before symptoms appear</em>, reducing antibiotic use and improving food system sustainability. Google's TPU infrastructure would dramatically accelerate the movement pattern training pipeline. The highest-prestige signal in the portfolio if selected.</p>
+        </div>
+      </div>
+      <div class="program-offer"><strong>What they offer:</strong> Grant funding ($1–5M range historically) &nbsp;·&nbsp; Google Cloud credits &nbsp;·&nbsp; AI expert access. No equity.</div>
+    </div>
+  </div>
+
+  <!-- SECTION 6: FIT MATRIX -->
+  <div class="section">
+    <p class="eyebrow">Section 6 — Program fit analysis</p>
+    <p class="section-title">Each program evaluated against ForcedField's primary value drivers.</p>
+    <p class="section-body">Six programs, five dimensions. The matrix below shows where each program is a strong match, a moderate overlap, or a partial fit — and why the portfolio as a whole is more than the sum of its parts.</p>
+
+    <div class="conv-table">
+      <div class="conv-header">
+        <div class="conv-header-cell">Program</div>
+        <div class="conv-header-cell">AI / Science</div>
+        <div class="conv-header-cell">Agriculture</div>
+        <div class="conv-header-cell">Deep tech HW</div>
+        <div class="conv-header-cell">IP retention</div>
+        <div class="conv-header-cell">Capital</div>
+      </div>
+
+      <div class="matrix-row">
+        <div class="matrix-cell"><span class="matrix-name">MassChallenge Switzerland<small>Lausanne · Zero equity</small></span></div>
+        <div class="matrix-cell"><span class="pill pill-strong">Strong</span></div>
+        <div class="matrix-cell"><span class="pill pill-strong">Strong</span></div>
+        <div class="matrix-cell"><span class="pill pill-mod">Moderate</span></div>
+        <div class="matrix-cell"><span class="pill pill-strong">Strong</span></div>
+        <div class="matrix-cell"><span class="pill pill-mod">Moderate</span></div>
+      </div>
+
+      <div class="matrix-row">
+        <div class="matrix-cell"><span class="matrix-name">Scale Up Calgary 50<small>Alberta · No equity</small></span></div>
+        <div class="matrix-cell"><span class="pill pill-mod">Moderate</span></div>
+        <div class="matrix-cell"><span class="pill pill-strong">Strong</span></div>
+        <div class="matrix-cell"><span class="pill pill-mod">Moderate</span></div>
+        <div class="matrix-cell"><span class="pill pill-strong">Strong</span></div>
+        <div class="matrix-cell"><span class="pill pill-part">Partial</span></div>
+      </div>
+
+      <div class="matrix-row">
+        <div class="matrix-cell"><span class="matrix-name">2048 Ventures<small>New York · Pre-seed VC</small></span></div>
+        <div class="matrix-cell"><span class="pill pill-mod">Moderate</span></div>
+        <div class="matrix-cell"><span class="pill pill-mod">Moderate</span></div>
+        <div class="matrix-cell"><span class="pill pill-strong">Strong</span></div>
+        <div class="matrix-cell"><span class="pill pill-strong">Strong</span></div>
+        <div class="matrix-cell"><span class="pill pill-strong">Strong</span></div>
+      </div>
+
+      <div class="matrix-row">
+        <div class="matrix-cell"><span class="matrix-name">Encode: AI for Science<small>UK · 12-month fellowship</small></span></div>
+        <div class="matrix-cell"><span class="pill pill-strong">Strong</span></div>
+        <div class="matrix-cell"><span class="pill pill-mod">Moderate</span></div>
+        <div class="matrix-cell"><span class="pill pill-strong">Strong</span></div>
+        <div class="matrix-cell"><span class="pill pill-strong">Strong</span></div>
+        <div class="matrix-cell"><span class="pill pill-mod">Moderate</span></div>
+      </div>
+
+      <div class="matrix-row">
+        <div class="matrix-cell"><span class="matrix-name">PACE Fellows<small>Summer cohort</small></span></div>
+        <div class="matrix-cell"><span class="pill pill-mod">Moderate</span></div>
+        <div class="matrix-cell"><span class="pill pill-mod">Moderate</span></div>
+        <div class="matrix-cell"><span class="pill pill-mod">Moderate</span></div>
+        <div class="matrix-cell"><span class="pill pill-strong">Strong</span></div>
+        <div class="matrix-cell"><span class="pill pill-mod">Moderate</span></div>
+      </div>
+
+      <div class="matrix-row">
+        <div class="matrix-cell"><span class="matrix-name">Google.org AI for Science<small>Global · Grant</small></span></div>
+        <div class="matrix-cell"><span class="pill pill-strong">Strong</span></div>
+        <div class="matrix-cell"><span class="pill pill-strong">Strong</span></div>
+        <div class="matrix-cell"><span class="pill pill-mod">Moderate</span></div>
+        <div class="matrix-cell"><span class="pill pill-strong">Strong</span></div>
+        <div class="matrix-cell"><span class="pill pill-strong">Strong</span></div>
+      </div>
+    </div>
+
+    <div class="highlight-card" style="margin-top: 2rem;">
+      <p class="hl-headline">The portfolio is deliberately complementary.</p>
+      <p class="hl-body" style="margin-top: 0.75rem;">Scale Up Calgary and MassChallenge provide non-dilutive credibility and government network access. 2048 Ventures is the primary near-term capital conversion event. Encode delivers compute infrastructure and the IP protection that is non-negotiable for a patent-forward company. Google.org is the highest-prestige signal in the portfolio and unlocks Google Cloud infrastructure for the training pipeline. PACE bridges the execution gap between decisions and fall cohort starts. A clean sweep is not the goal — the right three or four acceptances from complementary programs positions ForcedField for a Series A close in Q4 2026 from a position of multi-dimensional validation.</p>
+    </div>
+
+    <div style="margin-top: 2rem;">
+      <div class="layer-bar">
+        <div class="layer-num">I</div>
+        <div>
+          <div class="layer-title">Capital type diversification</div>
+          <div class="layer-sub">The six programs span four capital types: VC investment (2048), non-dilutive grants (Google.org, MassChallenge), government ecosystem access (Scale Up Calgary), and compute + salary infrastructure (Encode). No single rejection removes the capital pathway.</div>
+        </div>
+      </div>
+
+      <div class="layer-bar">
+        <div class="layer-num">II</div>
+        <div>
+          <div class="layer-title">Geography covers every target market</div>
+          <div class="layer-sub">Switzerland opens Europe. New York opens US venture. UK opens the research and deep-tech ecosystem. Calgary anchors Canada. Each acceptance opens a geographic channel that would otherwise require a separate market-entry effort.</div>
+        </div>
+      </div>
+
+      <div class="layer-bar">
+        <div class="layer-num">III</div>
+        <div>
+          <div class="layer-title">IP retention is non-negotiable — and every program respects it</div>
+          <div class="layer-sub">ForcedField's value is inseparable from its 300+ patent roadmap. Every program in this portfolio either takes zero equity (MassChallenge, Scale Up, Google.org) or explicitly guarantees IP stays with the founder (Encode). This was a hard selection criterion.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SECTION 7: TIMELINE -->
+  <div class="section" style="border-bottom: none;">
+    <p class="eyebrow">Section 7 — Decision timeline &amp; key dates</p>
+    <p class="section-title">Q2 / Q3 2026 — the calendar.</p>
+    <p class="section-body">All six decisions arrive in an eight-week window. The timeline below shows every event in order, with the action required at each stage.</p>
+
+    <div class="timeline">
+      <div class="tl-header">
+        <div class="tl-hcell">Date</div>
+        <div class="tl-hcell">Program</div>
+        <div class="tl-hcell">Event</div>
+        <div class="tl-hcell">Action</div>
+      </div>
+
+      <div class="tl-row bg-amber">
+        <div class="tl-cell date">April 2026</div>
+        <div class="tl-cell program-col">Scale Up Calgary 50</div>
+        <div class="tl-cell event">Decision</div>
+        <div class="tl-cell">Prepare onboarding docs</div>
+      </div>
+
+      <div class="tl-row bg-amber">
+        <div class="tl-cell date">April 2026</div>
+        <div class="tl-cell program-col">MassChallenge Switzerland</div>
+        <div class="tl-cell event">Decision</div>
+        <div class="tl-cell">Prepare onboarding docs</div>
+      </div>
+
+      <div class="tl-row bg-amber">
+        <div class="tl-cell date">April 2026</div>
+        <div class="tl-cell program-col">2048 Ventures</div>
+        <div class="tl-cell event">Decision</div>
+        <div class="tl-cell">Prepare NYC pitch week</div>
+      </div>
+
+      <div class="tl-row bg-teal">
+        <div class="tl-cell date">May 2026</div>
+        <div class="tl-cell program-col">Scale Up Calgary 50</div>
+        <div class="tl-cell event">Cohort begins</div>
+        <div class="tl-cell">Calgary intensive starts</div>
+      </div>
+
+      <div class="tl-row bg-coral">
+        <div class="tl-cell date">May 2026</div>
+        <div class="tl-cell program-col">Encode: AI for Science</div>
+        <div class="tl-cell event">Decision</div>
+        <div class="tl-cell">UK relocation planning</div>
+      </div>
+
+      <div class="tl-row bg-coral">
+        <div class="tl-cell date">May 2026</div>
+        <div class="tl-cell program-col">PACE Fellows</div>
+        <div class="tl-cell event">Decision</div>
+        <div class="tl-cell">Confirm July availability</div>
+      </div>
+
+      <div class="tl-row bg-coral">
+        <div class="tl-cell date">May 2026</div>
+        <div class="tl-cell program-col">Google.org AI for Science</div>
+        <div class="tl-cell event">Decision</div>
+        <div class="tl-cell">Prepare grant compliance</div>
+      </div>
+
+      <div class="tl-row bg-amber">
+        <div class="tl-cell date">May 27 – Jun 2</div>
+        <div class="tl-cell program-col">2048 Ventures</div>
+        <div class="tl-cell event">Pitch week</div>
+        <div class="tl-cell">Attend New York</div>
+      </div>
+
+      <div class="tl-row bg-teal">
+        <div class="tl-cell date">June 2026</div>
+        <div class="tl-cell program-col">MassChallenge Switzerland</div>
+        <div class="tl-cell event">Cohort begins</div>
+        <div class="tl-cell">Lausanne — EU partnerships</div>
+      </div>
+
+      <div class="tl-row bg-teal">
+        <div class="tl-cell date">Jul 6 – Aug 1</div>
+        <div class="tl-cell program-col">PACE Fellows</div>
+        <div class="tl-cell event">Cohort</div>
+        <div class="tl-cell">GTM sprint</div>
+      </div>
+
+      <div class="tl-row bg-teal">
+        <div class="tl-cell date">September 1</div>
+        <div class="tl-cell program-col">Encode: AI for Science</div>
+        <div class="tl-cell event">Cohort begins</div>
+        <div class="tl-cell">UK — 12-month fellowship</div>
+      </div>
+
+      <div class="tl-row bg-teal">
+        <div class="tl-cell date">Fall 2026</div>
+        <div class="tl-cell program-col">Google.org AI for Science</div>
+        <div class="tl-cell event">Cohort begins</div>
+        <div class="tl-cell">Grant program launch</div>
+      </div>
+    </div>
+
+    <div class="stat-grid">
+      <div class="stat"><p class="stat-n">6</p><p class="stat-l">Programs applied across 4 countries</p></div>
+      <div class="stat"><p class="stat-n">3</p><p class="stat-l">April decisions — earliest wave</p></div>
+      <div class="stat"><p class="stat-n">3</p><p class="stat-l">May decisions — deeper programs</p></div>
+    </div>
+
+    <div class="highlight-card" style="margin-top: 2rem;">
+      <p class="hl-headline">What winning looks like.</p>
+      <p class="hl-body" style="margin-top: 0.75rem;">The realistic best-case outcome is three to four acceptances from complementary programs: one capital event (2048 Ventures), one deep-tech fellowship (Encode), one high-prestige grant (Google.org), and one home-market anchor (Scale Up Calgary). This combination delivers compute infrastructure, investor relationships, non-dilutive funding, and Canadian ecosystem credibility simultaneously — positioning ForcedField for a Series A close in Q4 2026 from a position of demonstrated, multi-dimensional validation.</p>
+    </div>
+  </div>
+
+  <div class="footer-bar">
+    <span class="footer-brand">ForcedField</span>
+    <span class="footer-note">ForcedField Technologies (BC) &nbsp;·&nbsp; CacheCow Agriculture Inc. (AB) &nbsp;·&nbsp; Confidential &nbsp;·&nbsp; April 2026</span>
+  </div>
+
+</div>
+</body>
+</html>

@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CacheCow — Data Licensing</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,900;1,400;1,700&family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=DM+Sans:wght@300;400;500&display=swap');
+*{box-sizing:border-box;margin:0;padding:0;}
+:root{--cream:#f5f3ee;--ink:#1a1a18;--ink2:#4a4a46;--ink3:#8a8a84;--green:#1a3d2b;--gl:#e8f0eb;--border:rgba(26,26,24,0.12);}
+body{background:var(--cream);font-family:'DM Sans',sans-serif;color:var(--ink);}
+.wrap{max-width:900px;margin:0 auto;}
+.topbar{padding:1.25rem 2.5rem;display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid var(--border);}
+.brand{font-family:'Libre Baskerville',Georgia,serif;font-size:1rem;font-weight:700;color:var(--ink);}
+.top-r{font-size:11px;letter-spacing:0.08em;text-transform:uppercase;color:var(--ink3);}
+.site-nav{padding:0 2.5rem;border-bottom:1px solid var(--border);display:flex;gap:0;overflow-x:auto;scrollbar-width:none;}
+.site-nav::-webkit-scrollbar{display:none;}
+.snl{font-size:11px;font-weight:500;letter-spacing:0.08em;text-transform:uppercase;color:var(--ink3);padding:0.9rem 1.25rem;text-decoration:none;border-bottom:2px solid transparent;white-space:nowrap;transition:color 0.15s;}
+.snl:hover{color:var(--ink);}
+.snl.here{color:var(--ink);border-bottom-color:var(--ink);}
+.hero{padding:4.5rem 2.5rem 2.5rem;border-bottom:1px solid var(--border);}
+.ch{font-size:11px;letter-spacing:0.12em;text-transform:uppercase;color:var(--ink3);margin-bottom:1.5rem;}
+h1{font-family:'Playfair Display',Georgia,serif;font-size:clamp(2.6rem,5.5vw,4.2rem);font-weight:900;line-height:1.06;max-width:820px;margin-bottom:1.5rem;letter-spacing:-0.01em;}
+h1 em{font-style:italic;font-weight:400;}
+.hsub{font-size:16px;font-weight:300;line-height:1.8;max-width:520px;color:var(--ink2);margin-bottom:2.5rem;}
+.brow{display:flex;gap:12px;flex-wrap:wrap;}
+.bg{background:var(--green);color:#fff;border:none;padding:13px 30px;font-family:'DM Sans',sans-serif;font-size:13px;font-weight:500;letter-spacing:0.02em;cursor:pointer;}
+.bo{background:transparent;color:var(--ink);border:1px solid rgba(26,26,24,0.3);padding:13px 30px;font-family:'DM Sans',sans-serif;font-size:13px;cursor:pointer;}
+.sec{padding:3rem 2.5rem;border-bottom:1px solid var(--border);}
+.slbl{font-size:11px;letter-spacing:0.1em;text-transform:uppercase;color:var(--ink3);margin-bottom:1rem;}
+h2{font-family:'Playfair Display',Georgia,serif;font-size:clamp(1.5rem,3vw,2.1rem);font-weight:700;line-height:1.2;max-width:640px;margin-bottom:1rem;}
+.sbody{font-size:15px;font-weight:300;line-height:1.8;color:var(--ink2);max-width:580px;margin-bottom:1.5rem;}
+.sitalic{font-family:'Playfair Display',Georgia,serif;font-style:italic;font-size:clamp(1.1rem,2.5vw,1.55rem);line-height:1.45;max-width:560px;padding-left:1.5rem;border-left:2px solid rgba(26,26,24,0.18);margin-bottom:1.75rem;}
+.nums{display:grid;grid-template-columns:repeat(auto-fit,minmax(148px,1fr));gap:1px;background:var(--border);border:1px solid var(--border);margin:1.5rem 0 2rem;}
+.nc{background:var(--cream);padding:1.5rem 1.25rem;}
+.nb{font-family:'Playfair Display',Georgia,serif;font-size:2.3rem;font-weight:900;line-height:1;margin-bottom:6px;}
+.nl{font-size:12px;color:var(--ink3);line-height:1.4;}
+.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:14px;margin:1.5rem 0;}
+.card{border:1px solid var(--border);padding:1.5rem;background:var(--cream);}
+.ctag{font-size:10px;letter-spacing:0.1em;text-transform:uppercase;color:var(--ink3);margin-bottom:10px;}
+.ct{font-size:15px;font-weight:500;margin-bottom:6px;}
+.cb{font-size:13px;color:var(--ink2);line-height:1.6;}
+.tc{display:grid;grid-template-columns:1fr 1fr;gap:36px;margin:1.5rem 0;}
+@media(max-width:580px){.tc{grid-template-columns:1fr;}}
+.mf{margin:1.5rem 0;}
+.mfr{display:grid;grid-template-columns:130px 1fr;gap:20px;padding:1.5rem 0;border-bottom:1px solid var(--border);}
+.mfr:last-child{border-bottom:none;}
+.mfs{font-size:12px;font-weight:500;color:var(--green);letter-spacing:0.05em;text-transform:uppercase;padding-top:2px;}
+.mft{font-size:14px;font-weight:500;margin-bottom:3px;}
+.mfb{font-size:13px;color:var(--ink2);line-height:1.55;}
+.gbox{background:var(--gl);border:1px solid rgba(26,61,43,0.15);padding:2rem;margin:1.5rem 0;}
+.gbt{font-family:'Playfair Display',Georgia,serif;font-size:1.25rem;font-weight:700;margin-bottom:0.75rem;}
+.gbb{font-size:14px;color:var(--ink2);line-height:1.7;margin-bottom:1.25rem;}
+.gbg{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+@media(max-width:500px){.gbg{grid-template-columns:1fr;}}
+.gbi{padding:1rem;background:rgba(255,255,255,0.65);}
+.gbil{font-size:10px;text-transform:uppercase;letter-spacing:0.08em;color:var(--ink3);margin-bottom:5px;}
+.gbiv{font-size:14px;font-weight:500;}
+.hl{background:var(--green);padding:2.5rem;margin:1.5rem 0;}
+.hl h2{color:#fff;max-width:100%;}
+.hl .sbody{color:rgba(255,255,255,0.72);max-width:100%;}
+.hl .bg{background:#fff;color:var(--green);}
+.footer{padding:2rem 2.5rem;border-top:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px;}
+.fb{font-family:'Libre Baskerville',Georgia,serif;font-size:1rem;font-weight:700;color:var(--ink);}
+.fl{font-size:12px;color:var(--ink3);text-decoration:none;}
+.fl:hover{color:var(--ink);}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <div class="topbar">
+    <span class="brand">CacheCow</span>
+    <span class="top-r">Revenue Stream 02</span>
+  </div>
+
+  <nav class="site-nav">
+    <a class="snl" href="cachecow_rancher.html">For ranchers</a>
+    <a class="snl" href="cachecow_investor.html">Investors</a>
+    <a class="snl" href="cachecow_hardware.html">Hardware + subscription</a>
+    <a class="snl here" href="cachecow_data.html">Data licensing</a>
+    <a class="snl" href="cachecow_platform.html">Movement intelligence</a>
+  
+    <a class="snl" href="cachecow_weather.html">Weather intelligence</a>
+  </nav>
+
+  <div class="hero">
+    <p class="ch">Revenue Stream 02 — Agricultural Data Licensing</p>
+    <h1>The partner owns the animal.<br><em>The index is ours to license.</em></h1>
+    <p class="hsub">Every tag generates 2.5 million data points per animal per day. Anonymised and aggregated, this becomes the most valuable livestock intelligence dataset in existence — and every industry that touches cattle needs it. They cannot build it themselves. They can only buy access from us.</p>
+    <div class="brow">
+      <button class="bg">Explore licensing ↗</button>
+      <button class="bo">Become a founding partner</button>
+    </div>
+  </div>
+
+  <div class="sec">
+    <p class="slbl">The asset being built</p>
+    <h2>Seven years of individual animal intelligence. Impossible to replicate.</h2>
+    <p class="sbody">Traditional ML requires 5,000+ labelled illness events to train a reliable model. CacheCow's architecture needs 50. That means our data moat compounds 100× faster than any competitor. By year two of deployment, we hold insights no one else can access — and the gap widens every single day.</p>
+    <div class="nums">
+      <div class="nc"><p class="nb">2.5M</p><p class="nl">Data points per animal per day</p></div>
+      <div class="nc"><p class="nb">100×</p><p class="nl">Faster data accumulation vs. traditional ML systems</p></div>
+      <div class="nc"><p class="nb">$60M</p><p class="nl">Addressable annual licensing revenue at platform scale</p></div>
+      <div class="nc"><p class="nb">$0</p><p class="nl">Additional cost of goods to generate this revenue</p></div>
+    </div>
+  </div>
+
+  <div class="sec">
+    <p class="slbl">Who licenses this data</p>
+    <h2>Three industries. All operating blind. All desperate for what we'll have.</h2>
+    <div class="cards">
+      <div class="card"><p class="ctag">Insurance arbitrage · $7B market</p><p class="ct">Individual health trajectories for actuarial pricing</p><p class="cb">Every livestock insurer prices mortality risk on herd averages. Individual health data enables precise underwriting — and the first insurer to get there reprices the entire market.</p></div>
+      <div class="card"><p class="ctag">Genetic alpha · $12B market</p><p class="ct">Lifetime performance mapped to progeny prediction</p><p class="cb">Seedstock producers and breed societies need individual lifetime movement data tied to breeding outcomes. Nobody has it. We will. After Year 4, multi-generational correlations emerge.</p></div>
+      <div class="card"><p class="ctag">Predictive biology · $20B market</p><p class="ct">Pre-symptomatic disease signatures</p><p class="cb">Zoetis and Merck develop treatments after illness is diagnosed. The MII shows them what illness looks like 36–72 hours before it has a name. That data has never existed before.</p></div>
+    </div>
+  </div>
+
+  <div class="sec">
+    <p class="slbl">How the index works</p>
+    <h2>Partners collect. The index aggregates. Buyers license. Partners earn.</h2>
+    <div class="mf">
+      <div class="mfr"><p class="mfs">Partners collect</p><div><p class="mft">Individual animal movement intelligence</p><p class="mfb">2.5M data points per animal per day. Bioelectric signatures, movement patterns, health events, breeding outcomes. Collected passively — the partner does nothing extra.</p></div></div>
+      <div class="mfr"><p class="mfs">Index aggregates</p><div><p class="mft">Anonymised, population-scale intelligence</p><p class="mfb">Individual data is privacy-preserved and aggregated into the Motion Intelligence Index — the world's only continuous individual livestock health dataset at population scale.</p></div></div>
+      <div class="mfr"><p class="mfs">Buyers license</p><div><p class="mft">Targeted datasets for their specific needs</p><p class="mfb">Insurers license risk models. Genetics companies license performance correlations. Pharmaceutical companies license pre-clinical signatures. Market-rate recurring revenue.</p></div></div>
+      <div class="mfr"><p class="mfs">Partners earn</p><div><p class="mft">10–20% of licensing revenue from their herd's data</p><p class="mfb">Revenue flows back to the operations whose animals generated it. A 500-head operation earns an estimated $300–600K annually from data royalties alone.</p></div></div>
+    </div>
+  </div>
+
+  <div class="sec">
+    <p class="slbl">Founding partner program</p>
+    <h2>Join before the index is public. Lock in the highest revenue share rates.</h2>
+    <p class="sbody">We're enrolling a small number of founding partner operations now. Founding partners receive locked-in higher revenue share rates and first access to index-derived insights about their own herd — insights no other data source can provide.</p>
+    <div class="gbox">
+      <p class="gbt">What a founding partner operation looks like</p>
+      <p class="gbb">Minimum 500 head enrolled. 3-year partnership agreement. No technology cost during the founding cohort phase — CacheCow deploys at our expense.</p>
+      <div class="gbg">
+        <div class="gbi"><p class="gbil">Revenue share</p><p class="gbiv">15–20% of licensing revenue from your herd's data</p></div>
+        <div class="gbi"><p class="gbil">Estimated annual royalty</p><p class="gbiv">$300K–600K per 500-head operation at scale</p></div>
+        <div class="gbi"><p class="gbil">Commitment required</p><p class="gbiv">500+ head enrolled. 3-year partnership.</p></div>
+        <div class="gbi"><p class="gbil">Founding window</p><p class="gbiv">Limited cohort. Closes when pilot capacity reached.</p></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="sec" style="border-bottom:none;">
+    <div class="hl">
+      <h2>The more operations that join, the more valuable every operation's data becomes.</h2>
+      <p class="sbody">Population-scale pattern recognition only unlocks above a threshold. The first 10,000 animals create a useful dataset. The first 100,000 create an irreplaceable one. This is a winner-take-most dynamic — and the window to be the winner is open now.</p>
+      <button class="bg">Apply as a founding partner ↗</button>
+    </div>
+  </div>
+
+  <div class="footer">
+    <span class="fb">CacheCow</span>
+    <div style="display:flex;gap:24px;flex-wrap:wrap;">
+      <a class="fl" href="cachecow_hardware.html">← Hardware + subscription</a>
+      <a class="fl" href="cachecow_platform.html">Movement intelligence →</a>
+    </div>
+  </div>
+
+</div>
+</body>
+</html>

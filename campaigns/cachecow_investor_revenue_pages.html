@@ -1,0 +1,428 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CacheCow | Revenue Model</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400&family=IBM+Plex+Sans:wght@300;400;500&display=swap');
+*{box-sizing:border-box;margin:0;padding:0;}
+.app{font-family:'IBM Plex Sans',sans-serif;color:var(--color-text-primary);max-width:860px;margin:0 auto;}
+.nav{display:flex;gap:0;border-bottom:0.5px solid var(--color-border-tertiary);overflow-x:auto;scrollbar-width:none;}
+.nav::-webkit-scrollbar{display:none;}
+.nav-btn{flex:none;padding:14px 20px;font-family:'IBM Plex Sans',sans-serif;font-size:12px;font-weight:500;letter-spacing:0.05em;text-transform:uppercase;background:transparent;border:none;border-bottom:2px solid transparent;cursor:pointer;color:var(--color-text-secondary);white-space:nowrap;transition:all 0.15s;}
+.nav-btn.active{color:var(--color-text-primary);border-bottom-color:var(--color-text-primary);}
+.nav-btn:hover{color:var(--color-text-primary);}
+.page{display:none;}.page.active{display:block;}
+
+/* shared */
+.serif{font-family:'Cormorant Garamond',Georgia,serif;}
+.eyebrow{font-size:11px;font-weight:500;letter-spacing:0.12em;text-transform:uppercase;color:var(--color-text-tertiary);margin-bottom:1rem;}
+.hero{padding:3.5rem 2rem 2.5rem;border-bottom:0.5px solid var(--color-border-tertiary);}
+.hero h1{font-family:'Cormorant Garamond',Georgia,serif;font-size:clamp(2rem,5vw,3rem);font-weight:600;line-height:1.15;max-width:660px;margin-bottom:1.25rem;}
+.hero h1 em{font-style:italic;color:var(--color-text-secondary);}
+.hero p{font-size:16px;font-weight:300;line-height:1.75;max-width:540px;color:var(--color-text-secondary);margin-bottom:2rem;}
+.btn-dark{background:var(--color-text-primary);color:var(--color-background-primary);border:none;padding:12px 28px;font-family:'IBM Plex Sans',sans-serif;font-size:14px;font-weight:500;border-radius:var(--border-radius-md);cursor:pointer;transition:opacity 0.15s;}
+.btn-dark:hover{opacity:0.8;}
+.btn-outline{background:transparent;color:var(--color-text-primary);border:0.5px solid var(--color-border-primary);padding:12px 28px;font-family:'IBM Plex Sans',sans-serif;font-size:14px;font-weight:400;border-radius:var(--border-radius-md);cursor:pointer;transition:background 0.15s;}
+.btn-outline:hover{background:var(--color-background-secondary);}
+.btn-row{display:flex;gap:12px;flex-wrap:wrap;}
+.section{padding:2.5rem 2rem;border-bottom:0.5px solid var(--color-border-tertiary);}
+.section-title{font-family:'Cormorant Garamond',Georgia,serif;font-size:1.6rem;font-weight:600;line-height:1.3;max-width:600px;margin-bottom:1rem;}
+.section-body{font-size:15px;font-weight:300;line-height:1.75;color:var(--color-text-secondary);max-width:580px;}
+.stat-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px;margin-top:2rem;}
+.stat{background:var(--color-background-secondary);border-radius:var(--border-radius-md);padding:1.25rem 1rem;}
+.stat-n{font-family:'Cormorant Garamond',Georgia,serif;font-size:2.2rem;font-weight:600;line-height:1;margin-bottom:6px;}
+.stat-l{font-size:12px;color:var(--color-text-secondary);line-height:1.4;}
+.card-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:14px;margin-top:1.5rem;}
+.card{background:var(--color-background-primary);border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-lg);padding:1.25rem;}
+.card-tag{font-size:10px;font-weight:500;letter-spacing:0.08em;text-transform:uppercase;color:var(--color-text-tertiary);margin-bottom:10px;}
+.card-title{font-size:15px;font-weight:500;margin-bottom:8px;}
+.card-body{font-size:13px;color:var(--color-text-secondary);line-height:1.6;}
+.highlight-card{background:var(--color-background-secondary);border-radius:var(--border-radius-lg);padding:2rem;margin-top:1.5rem;}
+.hl-headline{font-family:'Cormorant Garamond',Georgia,serif;font-size:1.4rem;font-weight:600;line-height:1.3;max-width:500px;margin-bottom:0.75rem;}
+.hl-body{font-size:14px;color:var(--color-text-secondary);line-height:1.65;max-width:480px;margin-bottom:1.25rem;}
+.layer-bar{display:grid;grid-template-columns:32px 1fr;gap:14px;padding:1.5rem 0;border-bottom:0.5px solid var(--color-border-tertiary);align-items:start;}
+.layer-bar:last-child{border-bottom:none;}
+.layer-num{font-family:'Cormorant Garamond',Georgia,serif;font-size:1.8rem;font-weight:600;color:var(--color-text-tertiary);line-height:1;}
+.layer-title{font-size:15px;font-weight:500;margin-bottom:4px;}
+.layer-sub{font-size:13px;color:var(--color-text-secondary);line-height:1.6;}
+.badge{display:inline-block;font-size:11px;font-weight:500;padding:3px 10px;border-radius:var(--border-radius-md);margin-top:8px;}
+.badge-info{background:var(--color-background-info);color:var(--color-text-info);}
+.badge-success{background:var(--color-background-success);color:var(--color-text-success);}
+.badge-warn{background:var(--color-background-warning);color:var(--color-text-warning);}
+.timeline{display:flex;flex-direction:column;gap:0;margin-top:1.5rem;}
+.tl-row{display:grid;grid-template-columns:80px 1fr;gap:16px;padding:1.25rem 0;border-bottom:0.5px solid var(--color-border-tertiary);}
+.tl-row:last-child{border-bottom:none;}
+.tl-label{font-size:12px;font-weight:500;color:var(--color-text-tertiary);padding-top:2px;}
+.tl-title{font-size:14px;font-weight:500;margin-bottom:4px;}
+.tl-body{font-size:13px;color:var(--color-text-secondary);line-height:1.6;}
+.quote{font-family:'Cormorant Garamond',Georgia,serif;font-size:clamp(1.1rem,2.5vw,1.5rem);font-style:italic;font-weight:400;line-height:1.5;max-width:580px;padding-left:1.5rem;border-left:2px solid var(--color-border-secondary);margin-bottom:1.5rem;}
+.revenue-hero{display:grid;grid-template-columns:1fr 1fr;gap:24px;margin-top:1.5rem;}
+@media(max-width:540px){.revenue-hero{grid-template-columns:1fr;}}
+.rev-big{font-family:'Cormorant Garamond',Georgia,serif;font-size:2.8rem;font-weight:600;line-height:1;}
+.rev-label{font-size:13px;color:var(--color-text-secondary);margin-top:6px;}
+.footer-bar{padding:1.5rem 2rem;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px;}
+.footer-brand{font-family:'Cormorant Garamond',Georgia,serif;font-size:1.1rem;font-weight:600;}
+.footer-link{font-size:12px;color:var(--color-text-secondary);cursor:pointer;text-decoration:none;}
+.footer-link:hover{color:var(--color-text-primary);}
+</style>
+
+<div class="app">
+<div class="nav">
+  <button class="nav-btn active" onclick="show('inv')">Investor</button>
+  <button class="nav-btn" onclick="show('r1')">Hardware + subscription</button>
+  <button class="nav-btn" onclick="show('r2')">Data licensing</button>
+  <button class="nav-btn" onclick="show('r3')">Movement intelligence</button>
+</div>
+
+<!-- INVESTOR PAGE -->
+<div class="page active" id="p-inv">
+  <div class="hero">
+    <p class="eyebrow">CacheCow &nbsp;·&nbsp; Investor Overview</p>
+    <h1>The cattle industry is the<br><em>proof of concept.</em><br>The prize is everything else.</h1>
+    <p>Livestock was chosen deliberately — a $3T industry where every problem is measurable, every outcome is economic, and every insight generalises to any moving body on earth. We're not building an ag-tech company. We're building the world's first Movement Intelligence platform, with cattle as the validation layer.</p>
+    <div class="btn-row">
+      <button class="btn-dark" onclick="sendPrompt('I want to request the CacheCow investor deck and data room access')">Request the deck ↗</button>
+      <button class="btn-outline" onclick="sendPrompt('Walk me through the CacheCow investment thesis in detail')">Explore the thesis</button>
+    </div>
+  </div>
+
+  <div class="section">
+    <p class="eyebrow">The uncomfortable truth for investors</p>
+    <p class="section-title">The entire livestock monitoring market is solving the wrong problem.</p>
+    <p class="section-body">Every competitor is building a faster way to react to illness. CacheCow eliminates the need to react at all. That's not a product difference. That's a category difference — and category differences produce ARM-scale outcomes, not feature-war outcomes.</p>
+    <div class="stat-grid">
+      <div class="stat"><p class="stat-n">$3T</p><p class="stat-l">Global livestock industry addressable value chain</p></div>
+      <div class="stat"><p class="stat-n">$47B</p><p class="stat-l">Agricultural intelligence market being created, not competed for</p></div>
+      <div class="stat"><p class="stat-n">7–10yr</p><p class="stat-l">Technology moat — time for any competitor to replicate the architecture</p></div>
+      <div class="stat"><p class="stat-n">18mo</p><p class="stat-l">Window before incumbents can meaningfully respond</p></div>
+    </div>
+  </div>
+
+  <div class="section">
+    <p class="eyebrow">Three revenue layers — each one compounds the last</p>
+    <p class="section-title">Hardware gets us in the door. Data makes us sticky. Intelligence makes us irreplaceable.</p>
+    <div class="layer-bar">
+      <p class="layer-num">01</p>
+      <div>
+        <p class="layer-title">Hardware + subscription</p>
+        <p class="layer-sub">Device sales and per-animal annual subscription. $95/device, $50/year operating cost. 65%+ gross margins. Every tag deployed is a data node that strengthens layers two and three.</p>
+        <span class="badge badge-warn">Year 1 revenue</span>
+      </div>
+    </div>
+    <div class="layer-bar">
+      <p class="layer-num">02</p>
+      <div>
+        <p class="layer-title">Agricultural data licensing</p>
+        <p class="layer-sub">Anonymised, aggregated herd intelligence licensed to insurers, pharmaceutical companies, feed manufacturers, and breeding programs. High-margin recurring revenue that requires no additional hardware.</p>
+        <span class="badge badge-info">Year 2 unlock</span>
+      </div>
+    </div>
+    <div class="layer-bar">
+      <p class="layer-num">03</p>
+      <div>
+        <p class="layer-title">Movement Intelligence platform</p>
+        <p class="layer-sub">The architecture that makes CacheCow work — ternary AI, bioelectric sensing, on-device model-based RL — licensed to any industry tracking moving bodies. Wearables. Sports. Healthcare. The cattle herd funded the R&D. Every other vertical is margin.</p>
+        <span class="badge badge-success">Platform exit or IPO layer</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <p class="eyebrow">Why this architecture is impossible to replicate quickly</p>
+    <p class="quote">"Allflex tells you where your cow was. CacheCow tells you what your cow is about to do. Those are not competing products. They are different centuries."</p>
+    <div class="card-grid">
+      <div class="card">
+        <p class="card-tag">Technology moat</p>
+        <p class="card-title">On-device model-based RL</p>
+        <p class="card-body">100× sample efficiency vs. traditional ML. Learns from 50 real illness events instead of 5,000. Competitors need 5–10 years of data collection to reach comparable accuracy.</p>
+      </div>
+      <div class="card">
+        <p class="card-tag">Data moat</p>
+        <p class="card-title">Individual animal intelligence</p>
+        <p class="card-body">Every tag learns its specific animal overnight. After 12 months, each device holds irreplaceable individual health history. The longer deployed, the harder to displace.</p>
+      </div>
+      <div class="card">
+        <p class="card-tag">Patent moat</p>
+        <p class="card-title">Three-layer IP fortress</p>
+        <p class="card-body">Artofficial (foundational AI), CacheCow (application), ForcedField (hardware). Any competitor must license all three layers or can't legally compete. 8–15% of their revenue, forever.</p>
+      </div>
+      <div class="card">
+        <p class="card-tag">Cost moat</p>
+        <p class="card-title">$50/year vs. $150–$200/year</p>
+        <p class="card-body">66% cost advantage over market leader while delivering capabilities that are architecturally impossible for incumbents to match without rebuilding from scratch.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <p class="eyebrow">Fundraising path</p>
+    <p class="section-title">Three rounds. Each one changes what we're pitching.</p>
+    <div class="timeline">
+      <div class="tl-row">
+        <p class="tl-label">Seed · Now</p>
+        <div><p class="tl-title">$2M–5M · $10–20M pre-money</p><p class="tl-body">Patent filing (foundational MBRL), prototype validation, Sutton collaboration. Pitch: "Filing IP before public disclosure."</p></div>
+      </div>
+      <div class="tl-row">
+        <p class="tl-label">Series A · Mo. 12</p>
+        <div><p class="tl-title">$10–25M · $50–100M pre-money</p><p class="tl-body">Patents filed, pilots producing data, production-ready hardware. Pitch: "Validated architecture, scaling deployment."</p></div>
+      </div>
+      <div class="tl-row">
+        <p class="tl-label">Series B · Mo. 24</p>
+        <div><p class="tl-title">$50–100M · $300–500M pre-money</p><p class="tl-body">Patents granted, hardware shipping at scale, data licensing live. Pitch: "Platform revenue compounds. We're building ARM for movement intelligence."</p></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section" style="border-bottom:none;">
+    <div class="highlight-card">
+      <p class="hl-headline">The exit comparables aren't ag-tech. They're ARM and Qualcomm.</p>
+      <p class="hl-body">ARM: $145B market cap. Qualcomm: $150B. Both built on foundational IP licensed to every device in a category. CacheCow's architecture does for movement what ARM did for mobile processing. The cattle operation is the proof. The platform is the prize.</p>
+      <div class="btn-row">
+        <button class="btn-dark" onclick="sendPrompt('I want to request the CacheCow investor deck and data room access')">Request data room access ↗</button>
+      </div>
+    </div>
+  </div>
+
+  <hr style="border:none;border-top:0.5px solid var(--color-border-tertiary);">
+  <div class="footer-bar">
+    <span class="footer-brand">CacheCow</span>
+    <div style="display:flex;gap:20px;flex-wrap:wrap;">
+      <span class="footer-link" onclick="show('r1')">Revenue 1: Hardware</span>
+      <span class="footer-link" onclick="show('r2')">Revenue 2: Data</span>
+      <span class="footer-link" onclick="show('r3')">Revenue 3: Platform</span>
+    </div>
+  </div>
+</div>
+
+<!-- REVENUE 1: HARDWARE + SUBSCRIPTION -->
+<div class="page" id="p-r1">
+  <div class="hero">
+    <p class="eyebrow">Revenue stream 01 &nbsp;·&nbsp; Hardware + Subscription</p>
+    <h1>The tag pays for itself.<br><em>The subscription is pure margin.</em></h1>
+    <p>Device sales and per-animal annual subscriptions form the foundation of the business. Every tag deployed recovers its cost within the first year through prevented losses alone — and each one becomes a permanent data node feeding the higher-margin layers that follow.</p>
+    <div class="btn-row">
+      <button class="btn-dark" onclick="sendPrompt('I want to apply for a CacheCow pilot')">Apply for a pilot ↗</button>
+      <button class="btn-outline" onclick="sendPrompt('Show me the CacheCow ROI calculation for my herd size')">Calculate my ROI</button>
+    </div>
+  </div>
+
+  <div class="section">
+    <p class="eyebrow">The economics</p>
+    <p class="section-title">A 1,000-head operation. Year one numbers.</p>
+    <div class="stat-grid">
+      <div class="stat"><p class="stat-n">$95</p><p class="stat-l">Per device, one-time hardware cost</p></div>
+      <div class="stat"><p class="stat-n">$50</p><p class="stat-l">Per animal, per year subscription</p></div>
+      <div class="stat"><p class="stat-n">65%+</p><p class="stat-l">Gross margin on subscription revenue</p></div>
+      <div class="stat"><p class="stat-n">$24,500</p><p class="stat-l">Average preventable annual loss recovered per 1,000-head operation</p></div>
+    </div>
+  </div>
+
+  <div class="section">
+    <p class="eyebrow">What the subscription delivers</p>
+    <p class="section-title">Not a dashboard. A decision engine.</p>
+    <p class="section-body" style="margin-bottom:1.5rem;">Every animal tagged gets an AI model trained specifically to its individual baseline. The subscription is what keeps that model learning, updating, and sending alerts. It doesn't monitor the herd. It knows the animal.</p>
+    <div class="card-grid">
+      <div class="card">
+        <p class="card-tag">Health intelligence</p>
+        <p class="card-title">48–72 hour illness prediction</p>
+        <p class="card-body">Flags physiological deviation before symptoms are visible. Intervention cost drops from $2,500 to $150. On average, 89% detection accuracy.</p>
+      </div>
+      <div class="card">
+        <p class="card-tag">Breeding intelligence</p>
+        <p class="card-title">Estrus prediction at 95%+ accuracy</p>
+        <p class="card-body">12–24 hours advance warning vs. reactive detection. Optimises conception rates and reduces repeat breeding costs by $400–800 per animal annually.</p>
+      </div>
+      <div class="card">
+        <p class="card-tag">Infrastructure</p>
+        <p class="card-title">No cell coverage required</p>
+        <p class="card-body">Mesh network between devices. No gateways, no internet, no annual battery swap. Runs in -40°C to +85°C. Built for real pastures, not tech demos.</p>
+      </div>
+      <div class="card">
+        <p class="card-tag">Overnight learning</p>
+        <p class="card-title">The herd teaches itself while it sleeps</p>
+        <p class="card-body">When animals lie down, the device shifts to full compute mode. Models update nightly. Every morning the system is smarter than it was the day before.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <p class="eyebrow">Competitive position</p>
+    <p class="quote">"Allflex costs $150/animal/year and tells you where your cow was. CacheCow costs $50/animal/year and tells you what she'll do next. The expensive choice is choosing cheap technology."</p>
+    <div class="card-grid">
+      <div class="card">
+        <p class="card-tag">Allflex (market leader)</p>
+        <p class="card-title">$150/animal/year · Reactive alerts</p>
+        <p class="card-body">RFID + basic accelerometer. Tells you where the animal was and fires alerts after symptoms appear. Battery replacement every 12–18 months.</p>
+      </div>
+      <div class="card" style="border:2px solid var(--color-border-info);">
+        <p class="card-tag" style="color:var(--color-text-info);">CacheCow · recommended</p>
+        <p class="card-title">$50/animal/year · Predictive intelligence</p>
+        <p class="card-body">Bioelectric + multi-modal AI. Predicts illness 48–72 hours early. 2+ year battery. No infrastructure. Gets smarter every day it runs.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="section" style="border-bottom:none;">
+    <div class="highlight-card">
+      <p class="hl-headline">This revenue stream is designed to be the smallest of the three.</p>
+      <p class="hl-body">Hardware and subscription exist to get tags on animals at scale. Every device deployed generates data. That data is the raw material for licensing revenue that requires no additional cost of goods. Revenue stream one funds the collection of the asset that powers revenue streams two and three.</p>
+      <div class="btn-row">
+        <button class="btn-outline" onclick="show('r2')">See revenue stream 2: Data licensing →</button>
+      </div>
+    </div>
+  </div>
+  <hr style="border:none;border-top:0.5px solid var(--color-border-tertiary);">
+  <div class="footer-bar"><span class="footer-brand">CacheCow</span><div style="display:flex;gap:20px;flex-wrap:wrap;"><span class="footer-link" onclick="show('inv')">← Investor overview</span><span class="footer-link" onclick="show('r2')">Data licensing →</span></div></div>
+</div>
+
+<!-- REVENUE 2: DATA LICENSING -->
+<div class="page" id="p-r2">
+  <div class="hero">
+    <p class="eyebrow">Revenue stream 02 &nbsp;·&nbsp; Agricultural Data Licensing</p>
+    <h1>The rancher owns the animal.<br><em>The data is ours to license.</em></h1>
+    <p>Every tag generates 2.5 million data points per animal per day. Anonymised and aggregated, this becomes the most valuable livestock intelligence dataset in existence — and every industry that touches cattle needs it. They cannot build it themselves. They can only buy access from us.</p>
+    <div class="btn-row">
+      <button class="btn-dark" onclick="sendPrompt('Tell me more about CacheCow data licensing partnerships')">Explore licensing ↗</button>
+    </div>
+  </div>
+
+  <div class="section">
+    <p class="eyebrow">The asset being built</p>
+    <p class="section-title">Seven years of individual animal intelligence. Impossible to replicate.</p>
+    <p class="section-body" style="margin-bottom:1.5rem;">Traditional ML requires 5,000+ labelled illness events to train a reliable model. CacheCow's architecture needs 50. That means our data moat compounds 100× faster than any competitor can match. By year two of deployment, we hold insights no one else can access — and the gap widens every day.</p>
+    <div class="stat-grid">
+      <div class="stat"><p class="stat-n">2.5M</p><p class="stat-l">Data points per animal per day</p></div>
+      <div class="stat"><p class="stat-n">100×</p><p class="stat-l">Faster data accumulation than traditional ML systems</p></div>
+      <div class="stat"><p class="stat-n">$60M</p><p class="stat-l">Addressable annual licensing revenue at platform scale</p></div>
+      <div class="stat"><p class="stat-n">0</p><p class="stat-l">Additional cost of goods to generate this revenue</p></div>
+    </div>
+  </div>
+
+  <div class="section">
+    <p class="eyebrow">Who licenses this data</p>
+    <p class="section-title">Five industries. All desperate for what we'll have.</p>
+    <div class="card-grid">
+      <div class="card">
+        <p class="card-tag">Insurance</p>
+        <p class="card-title">Livestock mortality risk modelling</p>
+        <p class="card-body">Individual animal health histories enable actuarially precise livestock insurance. A $7B market currently priced on herd averages and guesswork.</p>
+      </div>
+      <div class="card">
+        <p class="card-tag">Pharmaceutical</p>
+        <p class="card-title">Pre-clinical disease patterns</p>
+        <p class="card-body">Illness onset signatures, treatment response data, and population-scale health trends. Zoetis, Merck Animal Health, and Elanco all pay for this insight.</p>
+      </div>
+      <div class="card">
+        <p class="card-tag">Feed + nutrition</p>
+        <p class="card-title">Feeding behaviour and efficiency correlation</p>
+        <p class="card-body">Grazing patterns, rumination data, and weight gain correlations enable precision feed formulation. An $8B market optimised on averages today.</p>
+      </div>
+      <div class="card">
+        <p class="card-tag">Genetics + breeding</p>
+        <p class="card-title">Individual performance and progeny prediction</p>
+        <p class="card-body">Lifetime movement and health profiles tied to breeding outcomes. The most valuable dataset in precision livestock genetics. A $12B market.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <p class="eyebrow">Rancher alignment</p>
+    <p class="section-title">Ranchers benefit from their data being licensed.</p>
+    <p class="section-body" style="margin-bottom:1.5rem;">This isn't extraction. Ranchers who opt into the data licensing program receive a share of the licensing revenue their herd generates. Their data makes the platform smarter. A smarter platform makes their operation more profitable. The flywheel is designed so rancher interests and platform interests are identical.</p>
+    <div class="highlight-card">
+      <p class="hl-headline">The more operations that join, the more valuable every individual operation's data becomes.</p>
+      <p class="hl-body">Population-scale pattern recognition only unlocks above a threshold. The first 10,000 animals create a useful dataset. The first 100,000 create an irreplaceable one. This is a winner-take-most dynamic — and the window to be the winner is open now.</p>
+      <div class="btn-row">
+        <button class="btn-outline" onclick="show('r3')">See revenue stream 3: Movement intelligence →</button>
+      </div>
+    </div>
+  </div>
+
+  <hr style="border:none;border-top:0.5px solid var(--color-border-tertiary);">
+  <div class="footer-bar"><span class="footer-brand">CacheCow</span><div style="display:flex;gap:20px;flex-wrap:wrap;"><span class="footer-link" onclick="show('r1')">← Hardware</span><span class="footer-link" onclick="show('r3')">Movement intelligence →</span></div></div>
+</div>
+
+<!-- REVENUE 3: MOVEMENT INTELLIGENCE -->
+<div class="page" id="p-r3">
+  <div class="hero">
+    <p class="eyebrow">Revenue stream 03 &nbsp;·&nbsp; Movement Intelligence Platform</p>
+    <h1>Cattle funded the R&D.<br><em>Every other body is margin.</em></h1>
+    <p>The architecture beneath CacheCow — ternary AI, bioelectric sensing, on-device model-based reinforcement learning — is not livestock-specific. It works for any moving body. Human wearables. Elite sports. Hospital monitoring. The cattle operation is where we proved it. The platform is where we license it.</p>
+    <div class="btn-row">
+      <button class="btn-dark" onclick="sendPrompt('Tell me about the CacheCow Movement Intelligence platform licensing opportunity')">Explore platform licensing ↗</button>
+    </div>
+  </div>
+
+  <div class="section">
+    <p class="eyebrow">The analogy that matters</p>
+    <p class="quote">"ARM doesn't make phones. ARM licenses the architecture that makes phones possible. Every mobile device on earth pays them. That's the model."</p>
+    <p class="section-body">Artofficial holds the foundational IP. ForcedField manufactures the hardware. CacheCow is the reference implementation that proves it works at scale in the harshest conditions on earth. Once proven, every vertical that needs individual movement intelligence becomes a licensing opportunity — and they all must pay, or they cannot legally compete.</p>
+  </div>
+
+  <div class="section">
+    <p class="eyebrow">Platform revenue potential</p>
+    <p class="section-title">The markets that open after cattle validation.</p>
+    <div class="card-grid">
+      <div class="card">
+        <p class="card-tag">Human wearables</p>
+        <p class="card-title">$47B market · Individual health AI</p>
+        <p class="card-body">The same architecture predicting cattle illness predicts human health events. Without the battery, cloud dependency, and data-privacy tradeoffs of current wearables.</p>
+      </div>
+      <div class="card">
+        <p class="card-tag">Elite sports</p>
+        <p class="card-title">$12B market · Injury prevention</p>
+        <p class="card-body">Movement deviation patterns that flag illness in cattle flag injury risk in athletes. NFL, NBA, Premier League — every team pays for 48-hour advance warning on their $50M assets.</p>
+      </div>
+      <div class="card">
+        <p class="card-tag">Healthcare monitoring</p>
+        <p class="card-title">$15B market · Continuous patient intelligence</p>
+        <p class="card-body">Hospital-grade individual patient monitoring without wired infrastructure. The architecture runs on a coin cell. No nurses needed to see the data.</p>
+      </div>
+      <div class="card">
+        <p class="card-tag">Industrial + logistics</p>
+        <p class="card-title">$8B market · Asset intelligence</p>
+        <p class="card-body">Any object that moves and matters. Supply chain tracking, equipment health monitoring, predictive maintenance. The same chip. Different firmware.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <p class="eyebrow">The IP structure</p>
+    <p class="section-title">Three entities. One inescapable licensing architecture.</p>
+    <p class="section-body" style="margin-bottom:1.5rem;">Any company that wants to build in this space must license from all three layers. Artofficial holds the foundational AI substrate — can't design around it without building an inferior system. CacheCow holds the application patents. ForcedField holds the hardware patents. Total licensing burden: 8–15% of competitor revenue, forever.</p>
+    <div class="stat-grid">
+      <div class="stat"><p class="stat-n">$500M–2B</p><p class="stat-l">Artofficial annual licensing revenue at scale</p></div>
+      <div class="stat"><p class="stat-n">$100–500M</p><p class="stat-l">CacheCow annual product + licensing revenue</p></div>
+      <div class="stat"><p class="stat-n">$300M–1B</p><p class="stat-l">ForcedField annual hardware + licensing revenue</p></div>
+      <div class="stat"><p class="stat-n">$900M–3.5B</p><p class="stat-l">Total ecosystem annual revenue at platform scale</p></div>
+    </div>
+  </div>
+
+  <div class="section" style="border-bottom:none;">
+    <div class="highlight-card">
+      <p class="hl-headline">The cattle herd is the most valuable test environment in the world for this technology.</p>
+      <p class="hl-body">Extreme weather. No cell coverage. Continuous outdoor operation. Animals that can't describe their symptoms. If the architecture works here — and it does — it works everywhere. The validation is underway. The window to own it is now.</p>
+      <div class="btn-row">
+        <button class="btn-dark" onclick="sendPrompt('I want to discuss the CacheCow Movement Intelligence licensing opportunity')">Start a conversation ↗</button>
+        <button class="btn-outline" onclick="show('inv')">← Back to investor overview</button>
+      </div>
+    </div>
+  </div>
+
+  <hr style="border:none;border-top:0.5px solid var(--color-border-tertiary);">
+  <div class="footer-bar"><span class="footer-brand">CacheCow</span><div style="display:flex;gap:20px;flex-wrap:wrap;"><span class="footer-link" onclick="show('r2')">← Data licensing</span><span class="footer-link" onclick="show('inv')">Investor overview</span></div></div>
+</div>
+</div>
+
+<script>
+function show(id){
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.nav-btn').forEach(b=>b.classList.remove('active'));
+  document.getElementById('p-'+id).classList.add('active');
+  const map={inv:0,'r1':1,'r2':2,'r3':3};
+  document.querySelectorAll('.nav-btn')[map[id]].classList.add('active');
+  document.querySelector('.app').scrollIntoView({behavior:'smooth',block:'start'});
+}
+</script>

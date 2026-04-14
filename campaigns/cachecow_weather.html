@@ -1,0 +1,418 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CacheCow — Weather Intelligence</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,900;1,400;1,700&family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=DM+Sans:wght@300;400;500&display=swap');
+*{box-sizing:border-box;margin:0;padding:0;}
+:root{--cream:#f5f3ee;--ink:#1a1a18;--ink2:#4a4a46;--ink3:#8a8a84;--green:#1a3d2b;--gl:#e8f0eb;--border:rgba(26,26,24,0.12);}
+body{background:var(--cream);font-family:'DM Sans',sans-serif;color:var(--ink);}
+.wrap{max-width:900px;margin:0 auto;}
+.topbar{padding:1.25rem 2.5rem;display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid var(--border);}
+.brand{font-family:'Libre Baskerville',Georgia,serif;font-size:1rem;font-weight:700;color:var(--ink);}
+.top-r{font-size:11px;letter-spacing:0.08em;text-transform:uppercase;color:var(--ink3);}
+.site-nav{padding:0 2.5rem;border-bottom:1px solid var(--border);display:flex;gap:0;overflow-x:auto;scrollbar-width:none;}
+.site-nav::-webkit-scrollbar{display:none;}
+.snl{font-size:11px;font-weight:500;letter-spacing:0.08em;text-transform:uppercase;color:var(--ink3);padding:0.9rem 1.25rem;text-decoration:none;border-bottom:2px solid transparent;white-space:nowrap;transition:color 0.15s;}
+.snl:hover{color:var(--ink);}
+.snl.here{color:var(--ink);border-bottom-color:var(--ink);}
+
+/* tab system */
+.tab-nav{border-top:1px solid var(--border);border-bottom:1px solid var(--border);padding:0 2.5rem;display:flex;overflow-x:auto;scrollbar-width:none;}
+.tab-nav::-webkit-scrollbar{display:none;}
+.tb{flex:none;padding:1rem 1.5rem 0.9rem;font-family:'DM Sans',sans-serif;font-size:11px;font-weight:500;letter-spacing:0.1em;text-transform:uppercase;background:transparent;border:none;border-bottom:2px solid transparent;cursor:pointer;color:var(--ink3);white-space:nowrap;transition:all 0.15s;}
+.tb.on{color:var(--green);border-bottom-color:var(--green);}
+.tb:hover{color:var(--ink);}
+.panel{display:none;padding:3rem 2.5rem;border-bottom:1px solid var(--border);}
+.panel.on{display:block;}
+
+.hero{padding:4.5rem 2.5rem 2.5rem;border-bottom:1px solid var(--border);}
+.ch{font-size:11px;letter-spacing:0.12em;text-transform:uppercase;color:var(--ink3);margin-bottom:1.5rem;}
+h1{font-family:'Playfair Display',Georgia,serif;font-size:clamp(2.6rem,5.5vw,4.2rem);font-weight:900;line-height:1.06;max-width:820px;margin-bottom:1.5rem;letter-spacing:-0.01em;}
+h1 em{font-style:italic;font-weight:400;}
+.hsub{font-size:16px;font-weight:300;line-height:1.8;max-width:520px;color:var(--ink2);margin-bottom:2.5rem;}
+.brow{display:flex;gap:12px;flex-wrap:wrap;}
+.bg{background:var(--green);color:#fff;border:none;padding:13px 30px;font-family:'DM Sans',sans-serif;font-size:13px;font-weight:500;letter-spacing:0.02em;cursor:pointer;}
+.bo{background:transparent;color:var(--ink);border:1px solid rgba(26,26,24,0.3);padding:13px 30px;font-family:'DM Sans',sans-serif;font-size:13px;cursor:pointer;}
+.sec{padding:3rem 2.5rem;border-bottom:1px solid var(--border);}
+.slbl{font-size:11px;letter-spacing:0.1em;text-transform:uppercase;color:var(--ink3);margin-bottom:1rem;}
+h2{font-family:'Playfair Display',Georgia,serif;font-size:clamp(1.5rem,3vw,2.1rem);font-weight:700;line-height:1.2;max-width:640px;margin-bottom:1rem;}
+.sbody{font-size:15px;font-weight:300;line-height:1.8;color:var(--ink2);max-width:580px;margin-bottom:1.5rem;}
+.sitalic{font-family:'Playfair Display',Georgia,serif;font-style:italic;font-size:clamp(1.1rem,2.5vw,1.55rem);line-height:1.45;max-width:580px;padding-left:1.5rem;border-left:2px solid rgba(26,26,24,0.18);margin-bottom:1.75rem;}
+.nums{display:grid;grid-template-columns:repeat(auto-fit,minmax(148px,1fr));gap:1px;background:var(--border);border:1px solid var(--border);margin:1.5rem 0 2rem;}
+.nc{background:var(--cream);padding:1.5rem 1.25rem;}
+.nb{font-family:'Playfair Display',Georgia,serif;font-size:2.3rem;font-weight:900;line-height:1;margin-bottom:6px;}
+.nl{font-size:12px;color:var(--ink3);line-height:1.4;}
+.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:14px;margin:1.5rem 0;}
+.card{border:1px solid var(--border);padding:1.5rem;background:var(--cream);}
+.ctag{font-size:10px;letter-spacing:0.1em;text-transform:uppercase;color:var(--ink3);margin-bottom:10px;}
+.ct{font-size:15px;font-weight:500;margin-bottom:6px;}
+.cb{font-size:13px;color:var(--ink2);line-height:1.6;}
+.tc{display:grid;grid-template-columns:1fr 1fr;gap:36px;margin:1.5rem 0;}
+@media(max-width:580px){.tc{grid-template-columns:1fr;}}
+.rl{margin:1rem 0;}
+.rli{display:grid;grid-template-columns:20px 1fr;gap:10px;margin-bottom:1rem;}
+.rn{font-family:'Playfair Display',Georgia,serif;font-size:0.85rem;font-weight:700;color:var(--ink3);}
+.rt{font-size:14px;font-weight:500;margin-bottom:2px;}
+.rb{font-size:13px;color:var(--ink2);line-height:1.55;}
+
+/* layers / stack */
+.stack{margin:1.5rem 0;}
+.stack-row{display:grid;grid-template-columns:44px 1fr;gap:16px;padding:1.5rem 0;border-bottom:1px solid var(--border);align-items:start;}
+.stack-row:last-child{border-bottom:none;}
+.sln{font-family:'Playfair Display',Georgia,serif;font-size:1.8rem;font-weight:900;color:rgba(26,26,24,0.18);line-height:1;}
+.slt{font-size:15px;font-weight:500;margin-bottom:4px;}
+.slb{font-size:13px;color:var(--ink2);line-height:1.6;}
+
+/* timeline */
+.tl{margin:1.5rem 0;}
+.tlr{display:grid;grid-template-columns:110px 1fr;gap:16px;padding:1.25rem 0;border-bottom:1px solid var(--border);}
+.tlr:last-child{border-bottom:none;}
+.tll{font-size:11px;font-weight:500;color:var(--ink3);text-transform:uppercase;letter-spacing:0.06em;padding-top:2px;}
+.tlt{font-size:14px;font-weight:500;margin-bottom:3px;}
+.tlb{font-size:13px;color:var(--ink2);line-height:1.6;}
+
+/* comparison table */
+.cmp-table{width:100%;border-collapse:collapse;margin:1.5rem 0;font-size:13px;}
+.cmp-table th{font-size:10px;font-weight:500;letter-spacing:0.08em;text-transform:uppercase;color:var(--ink3);padding:0.75rem 1rem;text-align:left;border-bottom:1px solid var(--border);}
+.cmp-table td{padding:0.85rem 1rem;border-bottom:1px solid var(--border);color:var(--ink2);vertical-align:top;line-height:1.5;}
+.cmp-table tr:last-child td{border-bottom:none;}
+.cmp-table .cc{font-weight:500;color:var(--ink);}
+.cmp-table .row-label{font-weight:500;color:var(--ink);font-size:12px;}
+
+/* scenario table */
+.scen{margin:1.5rem 0;}
+.scen-head{font-size:12px;font-weight:500;color:var(--ink3);text-transform:uppercase;letter-spacing:0.06em;margin-bottom:0.75rem;}
+.scen-table{width:100%;border-collapse:collapse;font-size:13px;}
+.scen-table th{font-size:10px;letter-spacing:0.07em;text-transform:uppercase;color:var(--ink3);padding:0.6rem 0.75rem;text-align:right;border-bottom:1px solid var(--border);}
+.scen-table th:first-child{text-align:left;}
+.scen-table td{padding:0.75rem;border-bottom:1px solid var(--border);color:var(--ink2);text-align:right;}
+.scen-table td:first-child{text-align:left;font-weight:500;color:var(--ink);}
+.scen-table tr:last-child td{border-bottom:none;font-weight:500;color:var(--ink);}
+
+/* gbox */
+.gbox{background:var(--gl);border:1px solid rgba(26,61,43,0.15);padding:2rem;margin:1.5rem 0;}
+.gbt{font-family:'Playfair Display',Georgia,serif;font-size:1.25rem;font-weight:700;margin-bottom:0.75rem;}
+.gbb{font-size:14px;color:var(--ink2);line-height:1.7;margin-bottom:1.25rem;}
+.gbg{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+@media(max-width:500px){.gbg{grid-template-columns:1fr;}}
+.gbi{padding:1rem;background:rgba(255,255,255,0.65);}
+.gbil{font-size:10px;text-transform:uppercase;letter-spacing:0.08em;color:var(--ink3);margin-bottom:5px;}
+.gbiv{font-size:14px;font-weight:500;}
+
+.hl{background:var(--green);padding:2.5rem;margin:1.5rem 0;}
+.hl h2{color:#fff;max-width:100%;}
+.hl .sbody{color:rgba(255,255,255,0.72);max-width:100%;}
+.hl .bg{background:#fff;color:var(--green);}
+.hl .bo{border-color:rgba(255,255,255,0.4);color:#fff;}
+.footer{padding:2rem 2.5rem;border-top:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px;}
+.fb{font-family:'Libre Baskerville',Georgia,serif;font-size:1rem;font-weight:700;color:var(--ink);}
+.fl{font-size:12px;color:var(--ink3);text-decoration:none;}
+.fl:hover{color:var(--ink);}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <div class="topbar">
+    <span class="brand">CacheCow</span>
+    <span class="top-r">Weather Intelligence</span>
+  </div>
+
+  <nav class="site-nav">
+    <a class="snl" href="cachecow_rancher.html">For ranchers</a>
+    <a class="snl" href="cachecow_investor.html">Investors</a>
+    <a class="snl" href="cachecow_hardware.html">Hardware + subscription</a>
+    <a class="snl" href="cachecow_data.html">Data licensing</a>
+    <a class="snl" href="cachecow_platform.html">Movement intelligence</a>
+    <a class="snl" href="cachecow_mii.html">Motion Intelligence Index</a>
+    <a class="snl here" href="cachecow_weather.html">Weather intelligence</a>
+  </nav>
+
+  <div class="hero">
+    <p class="ch">05 — Ground-Truth Intelligence</p>
+    <h1>We keep cows alive.<br><em>The network we build<br>to do it verifies the weather.</em></h1>
+    <p class="hsub">Every CacheCow tag is a calibrated atmospheric sensor, GPS-anchored to the square metre, transmitting from the rural landscapes where no weather station exists. The agricultural contract funds the deployment. The weather intelligence is what compounds the business.</p>
+    <div class="brow">
+      <button class="bg">Explore data licensing ↗</button>
+      <button class="bo">Become a founding partner</button>
+    </div>
+  </div>
+
+  <div class="tab-nav">
+    <button class="tb on" onclick="tab('thesis')">The Thesis</button>
+    <button class="tb" onclick="tab('network')">The Network</button>
+    <button class="tb" onclick="tab('markets')">Markets</button>
+    <button class="tb" onclick="tab('revenue')">Revenue Model</button>
+    <button class="tb" onclick="tab('rancher')">Rancher Value</button>
+  </div>
+
+  <!-- THE THESIS -->
+  <div class="panel on" id="p-thesis">
+    <p class="slbl">The uncomfortable truth about weather data</p>
+    <h2>The world is drowning in satellite data it cannot trust.</h2>
+    <p class="sitalic">"The licensing value is not the raw observation. It is the right to use verified, ground-anchored intelligence inside forecasts, models, alerts, and decision systems — and CacheCow creates that verification layer at continental scale."</p>
+    <p class="sbody">Satellites produce enormous volumes of atmospheric data. Government agencies, regulated industries, and AI model trainers are willing to pay a premium for exactly one thing those satellites cannot provide: proof that the observation was correct. A ground-truth layer is not more data. It is a verification and confidence product — evidence that a satellite-derived observation, classification, or forecast was accurate. That is valuable in any procurement setting where accuracy is auditable.</p>
+    <div class="nums">
+      <div class="nc"><p class="nb">$2.3B</p><p class="nl">Global weather data services market today</p></div>
+      <div class="nc"><p class="nb">$5.1B</p><p class="nl">Projected market size by 2033 — growing at 6–8% CAGR</p></div>
+      <div class="nc"><p class="nb">+25%</p><p class="nl">Ground-truth premium uplift on base data fees for audit-ready confidence layer</p></div>
+      <div class="nc"><p class="nb">~$0</p><p class="nl">Incremental cost to generate this revenue — hardware is already deployed</p></div>
+    </div>
+    <p class="sbody">The most important growth driver in this market is not consumer weather apps. It is enterprise and institutional demand for accuracy-verified, provenance-tracked, and compliance-ready data products. This is precisely the segment that a ground-truth verification layer addresses — and precisely where CacheCow operates.</p>
+    <div class="stack">
+      <div class="stack-row"><p class="sln">01</p><div><p class="slt">Data layer</p><p class="slb">Integrate free and licensed satellite, model, and station data from public-sector providers — Environment Canada, Bureau of Meteorology, India Meteorological Department.</p></div></div>
+      <div class="stack-row"><p class="sln">02</p><div><p class="slt">Ground-truth layer</p><p class="slb">The CacheCow device network — calibrated, instrumented, audit-ready, GPS-anchored observations from the exact locations where satellite data is weakest: remote rural land.</p></div></div>
+      <div class="stack-row"><p class="sln">03</p><div><p class="slt">Verification engine</p><p class="slb">A validation pipeline that scores each satellite or model product, detects bias, and produces confidence maps and audit logs. This is the moat — it improves autonomously as scale grows.</p></div></div>
+      <div class="stack-row"><p class="sln">04</p><div><p class="slt">Commercial layer</p><p class="slb">License the verification-scored product to governments, energy, aviation, insurance, and data providers who need to stamp their feeds as ground-verified. 85–92% gross margins.</p></div></div>
+    </div>
+    <div class="hl">
+      <h2>The strongest business case is not: we sell weather data.</h2>
+      <p class="sbody">It is: we sell trusted weather intelligence with proof — and we fund the entire network by keeping cows alive.</p>
+      <button class="bg" onclick="tab('network')">Next: The Network →</button>
+    </div>
+  </div>
+
+  <!-- THE NETWORK -->
+  <div class="panel" id="p-network">
+    <p class="slbl">The network</p>
+    <h2>The world's most distributed rural atmospheric sensor network. Built to tag cattle.</h2>
+    <p class="sbody">CacheCow was designed as a precision livestock intelligence platform. It is also, incidentally, the architecture for a continental ground-truth observation system. This is not a pivot — it is a second revenue stream that costs nothing incremental to build, because the hardware is already deployed and paid for by the agricultural contract.</p>
+    <div class="cards">
+      <div class="card">
+        <p class="ctag">Atmospheric sensing</p>
+        <p class="ct">Temperature, pressure, humidity — direct</p>
+        <p class="cb">The ONiO Wave Catcher (Sentinel) measures atmospheric variables continuously. Not inferred. Not modelled. Measured at ground level, physically present in the landscape.</p>
+      </div>
+      <div class="card">
+        <p class="ctag">Electromagnetic sensing</p>
+        <p class="ct">Lightning precursors at femtotesla sensitivity</p>
+        <p class="cb">The TMR quantum magnetic sensor detects atmospheric electromagnetic field variations — including storm precursors — at sensitivity levels no traditional met station achieves.</p>
+      </div>
+      <div class="card">
+        <p class="ctag">GPS positioning</p>
+        <p class="ct">±2cm absolute position, continuously verified</p>
+        <p class="cb">UWB positioning anchors every observation to a sub-2cm GPS coordinate. Every data point is physically located. Every location is continuously verified. The provenance chain is unbreakable.</p>
+      </div>
+      <div class="card">
+        <p class="ctag">Mesh architecture</p>
+        <p class="ct">1.5MB daily digest per 500-cow herd</p>
+        <p class="cb">Nordic BLE mesh coordinates a gossip protocol across the herd. By 05:00 AM, one LoRa burst transmits a complete daily digest — atmospheric observations, anomaly flags, confidence scores. Near-zero communication cost per observation.</p>
+      </div>
+    </div>
+    <p class="slbl" style="margin-top:2rem;">Why this cannot be replicated</p>
+    <table class="cmp-table">
+      <thead>
+        <tr>
+          <th>Capability</th>
+          <th class="cc">CacheCow</th>
+          <th>Allflex SenseHub</th>
+          <th>Traditional met station</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><td class="row-label">Observation density</td><td class="cc">1 node per head, continuous</td><td>No atmospheric sensing</td><td>1 station per ~50km²</td></tr>
+        <tr><td class="row-label">Positioning accuracy</td><td class="cc">±2cm GPS-anchored</td><td>Basic GPS only</td><td>Fixed installation</td></tr>
+        <tr><td class="row-label">Neural inference on-device</td><td class="cc">26–80 TOPS</td><td>None</td><td>None</td></tr>
+        <tr><td class="row-label">Ground-truth qualification</td><td class="cc">Calibrated, provenance-tracked</td><td>No</td><td>Partial</td></tr>
+        <tr><td class="row-label">Mesh resilience</td><td class="cc">Yes — LoRa + BLE</td><td>Cellular dependent</td><td>Grid dependent</td></tr>
+        <tr><td class="row-label">Weather data monetisation</td><td class="cc">Yes — dual revenue model</td><td>Not possible</td><td>Government funded only</td></tr>
+        <tr><td class="row-label">Hardware cost</td><td class="cc">$72 / device (Phase 1)</td><td>$160–200 / device</td><td>N/A</td></tr>
+      </tbody>
+    </table>
+    <div class="hl">
+      <h2>More devices deployed means denser observation grids, better bias maps, lower per-observation cost, and higher pricing power with institutional buyers.</h2>
+      <p class="sbody">The verification engine improves autonomously as scale grows. This is a true data network effect — the moat compounds with every tag deployed.</p>
+      <button class="bg" onclick="tab('markets')">Next: Markets →</button>
+    </div>
+  </div>
+
+  <!-- MARKETS -->
+  <div class="panel" id="p-markets">
+    <p class="slbl">Priority markets</p>
+    <h2>Three countries. Three distinct regulatory drivers. One verification product.</h2>
+    <p class="sbody">Canada, Australia, and India each have clear paths to ground-truth premium monetisation — driven by tightening data standards, regulatory compliance mandates, and institutional buyers already paying for weather data who need a verification stamp on top.</p>
+
+    <div style="margin:2rem 0;">
+      <p class="slbl">Canada</p>
+      <p class="sbody" style="margin-bottom:1rem;">Environment and Climate Change Canada provides open-data feeds but runs cost-recovered specialised services for private-sector and institutional users. National data-governance standards (CSA R100 for hydrometeorological stations) are tightening. CacheCow's opportunity: ground-truth-enhanced feeds for energy, aviation, infrastructure, and climate-risk modelling — positioned as the verification partner for CSA R100 compliance.</p>
+      <div class="cards">
+        <div class="card"><p class="ctag">Federal and provincial agencies</p><p class="ct">15–25 accounts · $200K–600K ACV</p><p class="cb">MSC, NRCan, provincial emergency management offices.</p></div>
+        <div class="card"><p class="ctag">Energy utilities and grid operators</p><p class="ct">20–35 accounts · $80K–200K ACV</p><p class="cb">Wind and solar forecast accuracy. Deviation penalties create direct financial incentive.</p></div>
+        <div class="card"><p class="ctag">Insurance and reinsurance</p><p class="ct">10–20 accounts · $50K–150K ACV</p><p class="cb">Climate-risk assessment and catastrophe modelling.</p></div>
+        <div class="card"><p class="ctag">Aviation and infrastructure</p><p class="ct">8–15 accounts · $40K–120K ACV</p><p class="cb">Nav Canada, rail, pipelines — operational weather verification.</p></div>
+      </div>
+    </div>
+
+    <div style="margin:2rem 0;padding-top:2rem;border-top:1px solid var(--border);">
+      <p class="slbl">Australia</p>
+      <p class="sbody" style="margin-bottom:1rem;">Bureau of Meteorology offers formal data-licence agreements for commercial re-users in aviation, media, and energy. Safeguard Mechanism emissions-reporting rules are tightening, creating demand for verified environmental data. CacheCow's opportunity: a verified-data stamp for climate-risk reports and ESG disclosures — sectors already licensing BoM data who need auditable ground-truth on top.</p>
+      <div class="cards">
+        <div class="card"><p class="ctag">Federal and state agencies</p><p class="ct">8–15 accounts · $150K–500K ACV</p><p class="cb">BoM, DCCEEW, state emergency services.</p></div>
+        <div class="card"><p class="ctag">Agriculture and water authorities</p><p class="ct">15–30 accounts · $40K–120K ACV</p><p class="cb">Irrigation, fire risk management, coastal zone planning.</p></div>
+        <div class="card"><p class="ctag">Energy and mining</p><p class="ct">12–20 accounts · $60K–180K ACV</p><p class="cb">Solar and wind forecast verification. Resource sector compliance.</p></div>
+        <div class="card"><p class="ctag">ESG and carbon markets</p><p class="ct">10–25 accounts · $30K–100K ACV</p><p class="cb">Safeguard Mechanism reporting. Verified environmental data as audit asset.</p></div>
+      </div>
+    </div>
+
+    <div style="margin:2rem 0;padding-top:2rem;border-top:1px solid var(--border);">
+      <p class="slbl">India</p>
+      <p class="sbody" style="margin-bottom:1rem;">New Central Electricity Authority regulations mandate high-frequency local weather logging at 50MW+ solar and wind plants. Companies are explicitly noting that outdated, low-quality weather data is a business problem. CacheCow's opportunity: a SaaS compliance module — satellite and model output validated against plant-level observations, with a confidence score per time-step and a bias flag. Sell to DISCOMs, RE utilities, and aviation operators.</p>
+      <div class="cards">
+        <div class="card"><p class="ctag">Renewable energy utilities</p><p class="ct">200–500 accounts · $15K–60K ACV</p><p class="cb">CEA compliance rules. Deviation penalties create direct financial incentive to verify.</p></div>
+        <div class="card"><p class="ctag">DISCOMs and grid operators</p><p class="ct">30–50 accounts · $80K–200K ACV</p><p class="cb">Load dispatch compliance. High-frequency weather logging mandated by regulation.</p></div>
+        <div class="card"><p class="ctag">Aviation</p><p class="ct">10–20 accounts · $50K–150K ACV</p><p class="cb">AAI and private operators — IMD data validation for operational planning.</p></div>
+        <div class="card"><p class="ctag">Research and universities</p><p class="ct">15–30 accounts · $20K–80K ACV</p><p class="cb">ICAR, IITs — calibration datasets for climate and atmospheric research.</p></div>
+      </div>
+    </div>
+
+    <div class="hl">
+      <h2>Every one of these buyers is already paying for weather data. We're selling them the proof it was right.</h2>
+      <button class="bg" onclick="tab('revenue')">Next: Revenue Model →</button>
+    </div>
+  </div>
+
+  <!-- REVENUE MODEL -->
+  <div class="panel" id="p-revenue">
+    <p class="slbl">Revenue model</p>
+    <h2>Agricultural contracts fund the deployment. Weather licensing is what compounds.</h2>
+    <p class="sbody">The model has three layers: agricultural contracts (base, financed by device hardware) + weather data licences (layered on top of deployed devices) + ground-truth premium (25% uplift on data fees for the audit-ready confidence layer). The agricultural contract funds deployment. Weather licensing is incremental at near-zero marginal cost. The ground-truth premium is effectively 100% incremental margin — confidence scoring on data the network already collects.</p>
+
+    <div class="nums">
+      <div class="nc"><p class="nb">72–78%</p><p class="nl">Gross margin on agricultural contracts post-hardware</p></div>
+      <div class="nc"><p class="nb">85–92%</p><p class="nl">Gross margin on weather data licences — layered on deployed hardware</p></div>
+      <div class="nc"><p class="nb">~100%</p><p class="nl">Incremental margin on ground-truth premium — zero additional COGS</p></div>
+    </div>
+
+    <div class="scen" style="margin-top:2rem;">
+      <p class="scen-head">Conservative — 10% of fleet participating in weather licensing</p>
+      <table class="scen-table">
+        <thead><tr><th>Year</th><th>Deployed devices</th><th>Agri revenue</th><th>Weather licences</th><th>GT premium</th><th>Total</th></tr></thead>
+        <tbody>
+          <tr><td>Year 1</td><td>50,000</td><td>$4.3M</td><td>$3.8M</td><td>$950K</td><td>$9.0M</td></tr>
+          <tr><td>Year 2</td><td>200,000</td><td>$17M</td><td>$18M</td><td>$4.5M</td><td>$39.5M</td></tr>
+          <tr><td>Year 3</td><td>500,000</td><td>$42.5M</td><td>$52M</td><td>$13M</td><td>$107.5M</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="scen" style="margin-top:2rem;">
+      <p class="scen-head">Base — 20% of fleet</p>
+      <table class="scen-table">
+        <thead><tr><th>Year</th><th>Deployed devices</th><th>Agri revenue</th><th>Weather licences</th><th>GT premium</th><th>Total</th></tr></thead>
+        <tbody>
+          <tr><td>Year 1</td><td>50,000</td><td>$4.3M</td><td>$7.5M</td><td>$1.9M</td><td>$13.7M</td></tr>
+          <tr><td>Year 2</td><td>200,000</td><td>$17M</td><td>$36M</td><td>$9M</td><td>$62M</td></tr>
+          <tr><td>Year 3</td><td>500,000</td><td>$42.5M</td><td>$103M</td><td>$25.8M</td><td>$171.3M</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="scen" style="margin-top:2rem;">
+      <p class="scen-head">Optimistic — 30% of fleet, government and research at 40% of mix</p>
+      <table class="scen-table">
+        <thead><tr><th>Year</th><th>Deployed devices</th><th>Agri revenue</th><th>Weather licences</th><th>GT premium</th><th>Total</th></tr></thead>
+        <tbody>
+          <tr><td>Year 1</td><td>50,000</td><td>$4.3M</td><td>$14M</td><td>$3.5M</td><td>$21.8M</td></tr>
+          <tr><td>Year 2</td><td>200,000</td><td>$17M</td><td>$68M</td><td>$17M</td><td>$102M</td></tr>
+          <tr><td>Year 3</td><td>500,000</td><td>$42.5M</td><td>$185M</td><td>$46.3M</td><td>$273.8M</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div style="margin-top:2rem;">
+      <p class="slbl">Implementation roadmap</p>
+      <div class="tl">
+        <div class="tlr"><p class="tll">Phase 1 · Q3 2026–Q2 2027</p><div><p class="tlt">Agricultural foundation · $5–10M</p><p class="tlb">10,000 devices deployed. Weather baseline collection begins. Atmospheric sensing validated in field conditions.</p></div></div>
+        <div class="tlr"><p class="tll">Phase 2 · Q3 2027–Q2 2028</p><div><p class="tlt">Weather licensing launch · $15–40M combined</p><p class="tlb">First government and commercial weather data licences. Verification engine v1 live. Canada and Australia pilots active.</p></div></div>
+        <div class="tlr"><p class="tll">Phase 3 · Q3–Q4 2028</p><div><p class="tlt">Ground-truth premium · $60–110M combined</p><p class="tlb">Confidence scoring API live. GT premium on all data licences. India pilot live. Rancher revenue share active.</p></div></div>
+        <div class="tlr"><p class="tll">Phase 4 · 2029+</p><div><p class="tlt">Platform dominance · $150M+</p><p class="tlb">CSA R100 verification partner. BoM and IMD certified ground-truth provider. Rancher data revenue share fully operational.</p></div></div>
+      </div>
+    </div>
+
+    <div class="hl">
+      <h2>The agricultural contract is the Trojan horse.</h2>
+      <p class="sbody">It must justify itself entirely on agricultural value — and it does. The weather data opportunity is invisible to the rancher but captured by the platform. Every device deployed to keep a cow alive simultaneously becomes a permanent node in the world's most trusted rural atmospheric sensor network.</p>
+      <button class="bg" onclick="tab('rancher')">Next: Rancher Value →</button>
+    </div>
+  </div>
+
+  <!-- RANCHER VALUE -->
+  <div class="panel" id="p-rancher">
+    <p class="slbl">Rancher value</p>
+    <h2>The weather data is invisible to the rancher. The value to their operation is not.</h2>
+    <p class="sbody">The agricultural contract justifies itself on livestock intelligence alone — the weather data opportunity is the platform's upside, not the rancher's ask. But there is a rancher kicker: participating operations earn a passive revenue share from the weather data their land generates. Their ranch becomes an environmental data asset.</p>
+
+    <div class="nums">
+      <div class="nc"><p class="nb">$325K</p><p class="nl">Added annual profit for a 500-head operation with CacheCow vs. without</p></div>
+      <div class="nc"><p class="nb">+93%</p><p class="nl">Profit increase — $350K traditional vs. $675K with CacheCow</p></div>
+      <div class="nc"><p class="nb">260%</p><p class="nl">5-year ROI on the technology investment for a 500-head operation</p></div>
+      <div class="nc"><p class="nb">18–24mo</p><p class="nl">Conservative contract payback period</p></div>
+    </div>
+
+    <div class="tc" style="margin-top:2rem;">
+      <div>
+        <p class="slbl">What ranchers pay per head today</p>
+        <div class="rl">
+          <div class="rli"><span class="rn">—</span><div><p class="rt">Feed · $400–600/head/yr</p><p class="rb">The largest operating cost. Feed efficiency improvements of 10–15% deliver $40–90/head/year in savings.</p></div></div>
+          <div class="rli"><span class="rn">—</span><div><p class="rt">Veterinary · $50–150/head/yr</p><p class="rb">Reactive treatment. CacheCow reduces this by catching illness at $150 intervention cost vs. $2,500 after symptoms appear.</p></div></div>
+          <div class="rli"><span class="rn">—</span><div><p class="rt">Mortality losses · $40–80/head/yr</p><p class="rb">2–4% industry average death rate, accepted as normal. It isn't normal. It's a data gap.</p></div></div>
+        </div>
+      </div>
+      <div>
+        <p class="slbl">What CacheCow delivers per head</p>
+        <div class="rl">
+          <div class="rli"><span class="rn">—</span><div><p class="rt">Early disease detection · $150–250/head/yr</p><p class="rb">TMR sensing detects illness 24–72 hours ahead of visible symptoms.</p></div></div>
+          <div class="rli"><span class="rn">—</span><div><p class="rt">Breeding optimisation · $200–400/head/yr</p><p class="rb">95%+ estrus detection accuracy vs. 50–60% industry standard.</p></div></div>
+          <div class="rli"><span class="rn">—</span><div><p class="rt">Feed efficiency · $40–90/head/yr</p><p class="rb">Activity correlation identifies 10–15% feed waste reduction opportunities.</p></div></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="gbox">
+      <p class="gbt">The weather data kicker — rancher data revenue share</p>
+      <p class="gbb">CacheCow shares a percentage of weather data licensing revenue with the rancher for their participation as an observation node. Structurally similar to FlightRadar24's model with aircraft operators. Modest but real passive income — and it deepens lock-in permanently.</p>
+      <div class="gbg">
+        <div class="gbi"><p class="gbil">Revenue share model</p><p class="gbiv">5–10% of weather licence revenue attributable to the rancher's land</p></div>
+        <div class="gbi"><p class="gbil">Example: 1,000-head operation</p><p class="gbiv">$3,000–8,000/year in passive income from weather data alone</p></div>
+        <div class="gbi"><p class="gbil">Effective contract cost reduction</p><p class="gbiv">Weather revenue share lowers net CacheCow cost to the rancher</p></div>
+        <div class="gbi"><p class="gbil">The alignment</p><p class="gbiv">Rancher's land becomes an environmental data asset. Their interests and the platform's interests are identical.</p></div>
+      </div>
+    </div>
+
+    <div class="hl">
+      <h2>Their land is already generating weather data. We're just the first to pay them for it.</h2>
+      <p class="sbody">Every rural operation sits on a landscape that atmospheric scientists, insurance actuaries, energy grid operators, and climate modellers are trying to understand with satellites from 400 miles up. CacheCow puts a calibrated sensor on the ground — and shares what that sensor earns.</p>
+      <div class="brow">
+        <button class="bg">Apply as a founding partner ↗</button>
+        <button class="bo" style="border-color:rgba(255,255,255,0.4);color:#fff;">Explore the full data model</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="footer">
+    <span class="fb">CacheCow</span>
+    <div style="display:flex;gap:24px;flex-wrap:wrap;">
+      <a class="fl" href="cachecow_rancher.html">For ranchers</a>
+      <a class="fl" href="cachecow_mii.html">Motion Intelligence Index</a>
+      <a class="fl" href="cachecow_data.html">Data licensing</a>
+      <a class="fl" href="cachecow_investor.html">Investor overview</a>
+    </div>
+  </div>
+
+</div>
+
+<script>
+function tab(id){
+  document.querySelectorAll('.panel').forEach(p=>p.classList.remove('on'));
+  document.querySelectorAll('.tb').forEach(b=>b.classList.remove('on'));
+  document.getElementById('p-'+id).classList.add('on');
+  const m={thesis:0,network:1,markets:2,revenue:3,rancher:4};
+  document.querySelectorAll('.tb')[m[id]].classList.add('on');
+  document.querySelector('.tab-nav').scrollIntoView({behavior:'smooth',block:'nearest'});
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CacheCow — Movement Intelligence Platform</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,900;1,400;1,700&family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=DM+Sans:wght@300;400;500&display=swap');
+*{box-sizing:border-box;margin:0;padding:0;}
+:root{--cream:#f5f3ee;--ink:#1a1a18;--ink2:#4a4a46;--ink3:#8a8a84;--green:#1a3d2b;--gl:#e8f0eb;--border:rgba(26,26,24,0.12);}
+body{background:var(--cream);font-family:'DM Sans',sans-serif;color:var(--ink);}
+.wrap{max-width:900px;margin:0 auto;}
+.topbar{padding:1.25rem 2.5rem;display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid var(--border);}
+.brand{font-family:'Libre Baskerville',Georgia,serif;font-size:1rem;font-weight:700;color:var(--ink);}
+.top-r{font-size:11px;letter-spacing:0.08em;text-transform:uppercase;color:var(--ink3);}
+.site-nav{padding:0 2.5rem;border-bottom:1px solid var(--border);display:flex;gap:0;overflow-x:auto;scrollbar-width:none;}
+.site-nav::-webkit-scrollbar{display:none;}
+.snl{font-size:11px;font-weight:500;letter-spacing:0.08em;text-transform:uppercase;color:var(--ink3);padding:0.9rem 1.25rem;text-decoration:none;border-bottom:2px solid transparent;white-space:nowrap;transition:color 0.15s;}
+.snl:hover{color:var(--ink);}
+.snl.here{color:var(--ink);border-bottom-color:var(--ink);}
+.hero{padding:4.5rem 2.5rem 2.5rem;border-bottom:1px solid var(--border);}
+.ch{font-size:11px;letter-spacing:0.12em;text-transform:uppercase;color:var(--ink3);margin-bottom:1.5rem;}
+h1{font-family:'Playfair Display',Georgia,serif;font-size:clamp(2.6rem,5.5vw,4.2rem);font-weight:900;line-height:1.06;max-width:820px;margin-bottom:1.5rem;letter-spacing:-0.01em;}
+h1 em{font-style:italic;font-weight:400;}
+.hsub{font-size:16px;font-weight:300;line-height:1.8;max-width:520px;color:var(--ink2);margin-bottom:2.5rem;}
+.brow{display:flex;gap:12px;flex-wrap:wrap;}
+.bg{background:var(--green);color:#fff;border:none;padding:13px 30px;font-family:'DM Sans',sans-serif;font-size:13px;font-weight:500;letter-spacing:0.02em;cursor:pointer;}
+.bo{background:transparent;color:var(--ink);border:1px solid rgba(26,26,24,0.3);padding:13px 30px;font-family:'DM Sans',sans-serif;font-size:13px;cursor:pointer;}
+.sec{padding:3rem 2.5rem;border-bottom:1px solid var(--border);}
+.slbl{font-size:11px;letter-spacing:0.1em;text-transform:uppercase;color:var(--ink3);margin-bottom:1rem;}
+h2{font-family:'Playfair Display',Georgia,serif;font-size:clamp(1.5rem,3vw,2.1rem);font-weight:700;line-height:1.2;max-width:640px;margin-bottom:1rem;}
+.sbody{font-size:15px;font-weight:300;line-height:1.8;color:var(--ink2);max-width:580px;margin-bottom:1.5rem;}
+.sitalic{font-family:'Playfair Display',Georgia,serif;font-style:italic;font-size:clamp(1.1rem,2.5vw,1.55rem);line-height:1.45;max-width:560px;padding-left:1.5rem;border-left:2px solid rgba(26,26,24,0.18);margin-bottom:1.75rem;}
+.nums{display:grid;grid-template-columns:repeat(auto-fit,minmax(148px,1fr));gap:1px;background:var(--border);border:1px solid var(--border);margin:1.5rem 0 2rem;}
+.nc{background:var(--cream);padding:1.5rem 1.25rem;}
+.nb{font-family:'Playfair Display',Georgia,serif;font-size:2.3rem;font-weight:900;line-height:1;margin-bottom:6px;}
+.nl{font-size:12px;color:var(--ink3);line-height:1.4;}
+.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:14px;margin:1.5rem 0;}
+.card{border:1px solid var(--border);padding:1.5rem;background:var(--cream);}
+.ctag{font-size:10px;letter-spacing:0.1em;text-transform:uppercase;color:var(--ink3);margin-bottom:10px;}
+.ct{font-size:15px;font-weight:500;margin-bottom:6px;}
+.cb{font-size:13px;color:var(--ink2);line-height:1.6;}
+.layers{margin:1.5rem 0;}
+.layer{display:grid;grid-template-columns:44px 1fr;gap:16px;padding:1.5rem 0;border-bottom:1px solid var(--border);}
+.layer:last-child{border-bottom:none;}
+.ln{font-family:'Playfair Display',Georgia,serif;font-size:1.8rem;font-weight:900;color:rgba(26,26,24,0.18);line-height:1;}
+.lt{font-size:15px;font-weight:500;margin-bottom:4px;}
+.lb{font-size:13px;color:var(--ink2);line-height:1.6;}
+.hl{background:var(--green);padding:2.5rem;margin:1.5rem 0;}
+.hl h2{color:#fff;max-width:100%;}
+.hl .sbody{color:rgba(255,255,255,0.72);max-width:100%;}
+.hl .bg{background:#fff;color:var(--green);}
+.hl .bo{border-color:rgba(255,255,255,0.4);color:#fff;}
+.footer{padding:2rem 2.5rem;border-top:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px;}
+.fb{font-family:'Libre Baskerville',Georgia,serif;font-size:1rem;font-weight:700;color:var(--ink);}
+.fl{font-size:12px;color:var(--ink3);text-decoration:none;}
+.fl:hover{color:var(--ink);}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <div class="topbar">
+    <span class="brand">CacheCow</span>
+    <span class="top-r">Revenue Stream 03</span>
+  </div>
+
+  <nav class="site-nav">
+    <a class="snl" href="cachecow_rancher.html">For ranchers</a>
+    <a class="snl" href="cachecow_investor.html">Investors</a>
+    <a class="snl" href="cachecow_hardware.html">Hardware + subscription</a>
+    <a class="snl" href="cachecow_data.html">Data licensing</a>
+    <a class="snl here" href="cachecow_platform.html">Movement intelligence</a>
+  
+    <a class="snl" href="cachecow_weather.html">Weather intelligence</a>
+  </nav>
+
+  <div class="hero">
+    <p class="ch">Revenue Stream 03 — Movement Intelligence Platform</p>
+    <h1>Cattle funded the R&D.<br><em>Every other body is margin.</em></h1>
+    <p class="hsub">The architecture beneath CacheCow — ternary AI, bioelectric sensing, on-device model-based reinforcement learning — is not livestock-specific. It works for any moving body. Human wearables. Elite sports. Hospital monitoring. The cattle operation is where we proved it. The platform is where we license it to everyone else.</p>
+    <div class="brow">
+      <button class="bg">Explore platform licensing ↗</button>
+      <button class="bo">View investor overview</button>
+    </div>
+  </div>
+
+  <div class="sec">
+    <p class="slbl">The analogy that matters</p>
+    <h2>ARM doesn't make phones. ARM licenses the architecture that makes phones possible.</h2>
+    <p class="sitalic">"Every mobile device on earth pays ARM. That's the model. Artofficial holds the foundational IP. CacheCow proves it works. Every vertical that needs individual movement intelligence becomes a licensing opportunity — and they all must pay, or they cannot legally compete."</p>
+    <p class="sbody">Artofficial holds the foundational AI substrate. ForcedField manufactures the hardware. CacheCow is the reference implementation, validated at scale in the harshest operating conditions on earth. Once proven, the architecture licenses to any industry tracking moving bodies.</p>
+  </div>
+
+  <div class="sec">
+    <p class="slbl">The markets that open after cattle validation</p>
+    <h2>Four verticals. All tracking moving bodies. All underserved by current technology.</h2>
+    <div class="cards">
+      <div class="card"><p class="ctag">Human wearables · $47B</p><p class="ct">Individual health AI without the tradeoffs</p><p class="cb">No cloud dependency, no annual battery swap, no data-privacy compromise. The same architecture that predicts cattle illness predicts human health events. On a coin cell.</p></div>
+      <div class="card"><p class="ctag">Elite sports · $12B</p><p class="ct">Injury prevention 48 hours out</p><p class="cb">Movement deviation patterns that flag illness in cattle flag injury risk in athletes. NFL, NBA, Premier League — 48-hour advance warning on $50M assets. No team can afford not to have it.</p></div>
+      <div class="card"><p class="ctag">Healthcare monitoring · $15B</p><p class="ct">Continuous patient intelligence</p><p class="cb">Hospital-grade individual patient monitoring without wired infrastructure. The architecture runs on a coin cell. Edge AI. No nurses required to see the data.</p></div>
+      <div class="card"><p class="ctag">Industrial + logistics · $8B</p><p class="ct">Asset intelligence at scale</p><p class="cb">Any object that moves and matters. Supply chain tracking, equipment health monitoring, predictive maintenance. The same chip. Different firmware. Infinite verticals.</p></div>
+    </div>
+  </div>
+
+  <div class="sec">
+    <p class="slbl">The IP structure</p>
+    <h2>Three entities. One inescapable licensing architecture.</h2>
+    <p class="sbody">Any company that wants to build in this space must license from all three layers. Artofficial holds the foundational AI substrate — you can't design around it without building an inferior binary system. CacheCow holds the application patents. ForcedField holds the hardware patents.</p>
+    <div class="layers">
+      <div class="layer"><p class="ln">A</p><div><p class="lt">Artofficial — foundational substrate</p><p class="lb">Ternary MBRL patents. Everyone building in this space must license. 3–5% of their revenue, forever. $500M–2B annually at platform scale.</p></div></div>
+      <div class="layer"><p class="ln">C</p><div><p class="lt">CacheCow — application layer</p><p class="lb">Livestock-specific application patents. Vertical protection. Any competitor in agricultural intelligence must license. $100–500M annually at scale.</p></div></div>
+      <div class="layer"><p class="ln">F</p><div><p class="lt">ForcedField — hardware platform</p><p class="lb">Chip design, sensor integration, neuromorphic architecture patents. Any hardware competitor must license. $300M–1B annually at scale.</p></div></div>
+    </div>
+    <div class="nums">
+      <div class="nc"><p class="nb">$500M–2B</p><p class="nl">Artofficial annual licensing revenue at scale</p></div>
+      <div class="nc"><p class="nb">$100–500M</p><p class="nl">CacheCow annual product + licensing revenue</p></div>
+      <div class="nc"><p class="nb">$300M–1B</p><p class="nl">ForcedField annual hardware + licensing revenue</p></div>
+      <div class="nc"><p class="nb">$900M–3.5B</p><p class="nl">Total ecosystem annual revenue at platform scale</p></div>
+    </div>
+  </div>
+
+  <div class="sec" style="border-bottom:none;">
+    <div class="hl">
+      <h2>The cattle herd is the most valuable test environment in the world for this architecture.</h2>
+      <p class="sbody">Extreme weather. No cell coverage. Continuous outdoor operation. Animals that can't describe their symptoms. If it works here — and it does — it works everywhere. The validation is underway. The window to own it is now.</p>
+      <div class="brow">
+        <button class="bg">Start a conversation ↗</button>
+        <button class="bo">View investor overview</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="footer">
+    <span class="fb">CacheCow</span>
+    <div style="display:flex;gap:24px;flex-wrap:wrap;">
+      <a class="fl" href="cachecow_data.html">← Data licensing</a>
+      <a class="fl" href="cachecow_investor.html">Investor overview</a>
+    </div>
+  </div>
+
+</div>
+</body>
+</html>
