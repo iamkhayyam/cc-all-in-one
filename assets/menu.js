@@ -20,37 +20,28 @@
     /* floating logo trigger */
     .cc-menu-fab {
       position: fixed;
-      bottom: 2rem;
-      right: 2rem;
       width: 64px;
       height: 64px;
-      border-radius: 50%;
-      background: #fff;
-      border: 1.5px solid rgba(26,26,24,0.15);
-      box-shadow: 0 4px 24px rgba(0,0,0,0.12);
       cursor: pointer;
       z-index: 9998;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      transition: transform 0.2s ease, box-shadow 0.2s ease;
-      padding: 6px;
+      pointer-events: auto;
+      filter: drop-shadow(0 2px 8px rgba(0,0,0,0.18));
+      will-change: transform;
+      /* start bottom-center until first mouse move */
+      left: calc(50% - 32px);
+      top: calc(100vh - 80px);
     }
-    .cc-menu-fab:hover {
-      transform: scale(1.08);
-      box-shadow: 0 6px 32px rgba(0,0,0,0.18);
-    }
-    .cc-menu-fab img {
+    .cc-menu-fab svg {
       width: 100%;
       height: 100%;
-      object-fit: contain;
+      display: block;
     }
-    @media (prefers-color-scheme: dark) {
-      .cc-menu-fab {
-        background: #242420;
-        border-color: rgba(240,239,232,0.15);
-        box-shadow: 0 4px 24px rgba(0,0,0,0.35);
-      }
+    .cc-menu-fab:hover {
+      filter: drop-shadow(0 4px 16px rgba(0,0,0,0.28));
+    }
+
+    @media (max-width: 700px) {
+      .cc-menu-fab { width: 48px; height: 48px; }
     }
 
     /* fullscreen overlay menu */
@@ -177,7 +168,6 @@
       .cc-fs-menu .cc-menu-col-left { border-right: none; border-bottom: 1px solid rgba(255,255,255,0.1); }
       .cc-fs-menu .cc-menu-divider { display: none; }
       .cc-fs-menu .cc-menu-link { font-size: 1.3rem; }
-      .cc-menu-fab { width: 52px; height: 52px; bottom: 1.25rem; right: 1.25rem; }
     }
   `;
   document.head.appendChild(style);
@@ -199,12 +189,74 @@
       <path d="M110 182 Q115 198 120 195 Q125 198 127 192 Q130 198 135 195 Q138 198 140 188" fill="#f5b0c0" stroke="#1a1a18" stroke-width="1.5"/>
     </svg>`;
 
-    // floating button
+    // floating logo — no container, just the SVG
     const fab = document.createElement("div");
     fab.className = "cc-menu-fab";
     fab.innerHTML = logoSvg;
     fab.title = "Menu";
     document.body.appendChild(fab);
+
+    /* ── mouse-follow + idle drift ── */
+    const fabW = 64;
+    const fabH = 64;
+    // current rendered position
+    let cx = window.innerWidth / 2 - fabW / 2;
+    let cy = window.innerHeight - 80;
+    // target position (where mouse is, or idle home)
+    let tx = cx;
+    let ty = cy;
+    // lerp factor — slow ease
+    const lerp = 0.06;
+    let idleTimer = null;
+    let isIdle = true;
+    let menuOpen = false;
+
+    function setIdleTarget() {
+      isIdle = true;
+      tx = window.innerWidth / 2 - fabW / 2;
+      ty = window.innerHeight - 80;
+    }
+
+    function resetIdleTimer() {
+      isIdle = false;
+      clearTimeout(idleTimer);
+      idleTimer = setTimeout(setIdleTarget, 10000);
+    }
+
+    // track mouse — offset so cow is beside cursor, not under it
+    document.addEventListener("mousemove", function (e) {
+      if (menuOpen) return;
+      tx = e.clientX - fabW / 2;
+      ty = e.clientY - fabH / 2;
+      resetIdleTimer();
+    });
+
+    // also reset idle on scroll/touch
+    document.addEventListener("scroll", resetIdleTimer, { passive: true });
+    document.addEventListener("touchstart", function (e) {
+      if (menuOpen) return;
+      const t = e.touches[0];
+      tx = t.clientX - fabW / 2;
+      ty = t.clientY - fabH / 2;
+      resetIdleTimer();
+    }, { passive: true });
+
+    // keep idle target fresh on resize
+    window.addEventListener("resize", function () {
+      if (isIdle) setIdleTarget();
+    });
+
+    // animation loop
+    function tick() {
+      if (!menuOpen) {
+        cx += (tx - cx) * lerp;
+        cy += (ty - cy) * lerp;
+        fab.style.left = cx + "px";
+        fab.style.top = cy + "px";
+      }
+      requestAnimationFrame(tick);
+    }
+    requestAnimationFrame(tick);
 
     // fullscreen menu
     const menu = document.createElement("div");
@@ -249,7 +301,6 @@
     document.body.appendChild(menu);
 
     /* ── GSAP timeline ── */
-    let isOpen = false;
     const tl = gsap.timeline({ paused: true });
 
     tl.to(menu, { duration: 0.3, opacity: 1 });
@@ -275,20 +326,25 @@
     );
 
     function toggle() {
-      if (isOpen) {
+      if (menuOpen) {
         tl.reverse();
+        menuOpen = false;
+        // resume follow after closing
+        fab.style.pointerEvents = "auto";
+        resetIdleTimer();
       } else {
         tl.play();
+        menuOpen = true;
+        // hide fab behind overlay
+        fab.style.pointerEvents = "none";
       }
-      isOpen = !isOpen;
     }
 
     fab.addEventListener("click", toggle);
     menu.querySelector(".cc-menu-close").addEventListener("click", toggle);
 
-    // close on escape
     document.addEventListener("keydown", function (e) {
-      if (e.key === "Escape" && isOpen) toggle();
+      if (e.key === "Escape" && menuOpen) toggle();
     });
   }
 })();
