@@ -3,141 +3,158 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>CacheCow | Wearables vs Cattle Isomorphism</title>
+<title>CacheCow — Wearables vs Cattle Isomorphism</title>
 <style>
-  @import url('https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Mono:wght@400;500&family=Instrument+Sans:wght@400;500;600&display=swap');
-  :root {
-    --ff-gold: #C8963A;
-    --ff-gold-light: #F0D49A;
-    --ff-green: #2D6A4F;
-    --ff-green-light: #D8F3DC;
-    --ff-teal: #1D9E75;
-    --ff-cream: #FAFAF7;
-    --ff-dark: #1C1C1A;
-    --ff-mid: #4A4A46;
-    --ff-border: rgba(0,0,0,0.08);
-  }
-  --color-text-primary: #1a1a18;
-  --color-text-secondary: #5a5a56;
-  --color-text-tertiary: #9a9a94;
-  --color-background-primary: #ffffff;
-  --color-background-secondary: #f5f4f0;
-  --color-border-primary: rgba(26,26,24,0.4);
-  --color-border-secondary: rgba(26,26,24,0.25);
-  --color-border-tertiary: rgba(26,26,24,0.12);
-  --border-radius-md: 8px;
-  --border-radius-lg: 12px;
-  }
-  @media(prefers-color-scheme:dark){
-  :root{
-    --ff-gold: #E4B85E;--ff-gold-light: #6B5228;--ff-green: #5dcaa5;--ff-green-light: rgba(42,138,90,0.18);
-    --ff-teal: #5dcaa5;--ff-cream: #1a1a18;--ff-dark: #f0efe8;--ff-mid: #b8b8b0;--ff-border: rgba(240,239,232,0.1);
-    --color-text-primary:#f0efe8;--color-text-secondary:#b8b8b0;--color-text-tertiary:#8a8a82;
-    --color-background-primary:#1a1a18;--color-background-secondary:#242420;
-    --color-border-primary:rgba(240,239,232,0.35);--color-border-secondary:rgba(240,239,232,0.2);--color-border-tertiary:rgba(240,239,232,0.1);
-  }
-  body{background:#1a1a18;}
-  .mirror-header.human{background:rgba(24,95,165,0.18);color:#85b7eb;}
-  .mirror-header.cattle{background:rgba(42,138,90,0.18);color:#5dcaa5;}
-  .mirror-cell.human{background:rgba(24,95,165,0.06);}
-  .mirror-cell.cattle{background:rgba(42,138,90,0.06);}
-  .mirror-advantage{background:rgba(42,138,90,0.15);color:#5dcaa5;}
-  .mirror-neutral{background:rgba(24,95,165,0.15);color:#85b7eb;}
-  .badge-legacy{background:rgba(240,239,232,0.08);color:#8a8a82;}
-  .badge-emerging{background:rgba(186,117,23,0.18);color:#e4a83a;}
-  .badge-platform{background:rgba(42,138,90,0.18);color:#5dcaa5;}
-  .featured-badge{background:rgba(42,138,90,0.18);color:#5dcaa5;}
-  .comp-card.cachcow{border-color:#5dcaa5;}
-  .bar-human{background:rgba(24,95,165,0.35);color:#85b7eb;}
-  .bar-cattle{background:rgba(42,138,90,0.35);color:#5dcaa5;}
-  }
-  * { box-sizing: border-box; margin: 0; padding: 0; }
-  body { font-family: 'Instrument Sans', sans-serif; background: var(--color-background-primary); color: var(--color-text-primary); }
-  .page { padding: 2rem 1.5rem; background: transparent; max-width: 900px; }
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,900;1,400;1,700&family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=DM+Sans:wght@300;400;500&display=swap');
+*{box-sizing:border-box;margin:0;padding:0;}
+:root{--cream:#f5f3ee;--ink:#1a1a18;--ink2:#4a4a46;--ink3:#8a8a84;--green:#1a3d2b;--gl:#e8f0eb;--border:rgba(26,26,24,0.12);}
+body{background:var(--cream);font-family:'DM Sans',sans-serif;color:var(--ink);}
+.wrap{max-width:900px;margin:0 auto;}
+.topbar{padding:1.25rem 2.5rem;display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid var(--border);}
+.brand{font-family:'Libre Baskerville',Georgia,serif;font-size:1rem;font-weight:700;color:var(--ink);}
+.top-r{font-size:11px;letter-spacing:0.08em;text-transform:uppercase;color:var(--ink3);}
+.site-nav{padding:0 2.5rem;border-bottom:1px solid var(--border);display:flex;gap:0;overflow-x:auto;scrollbar-width:none;}
+.site-nav::-webkit-scrollbar{display:none;}
+.snl{font-size:11px;font-weight:500;letter-spacing:0.08em;text-transform:uppercase;color:var(--ink3);padding:0.9rem 1.25rem;text-decoration:none;border-bottom:2px solid transparent;white-space:nowrap;transition:color 0.15s;}
+.snl:hover{color:var(--ink);}
+.snl.here{color:var(--ink);border-bottom-color:var(--ink);}
+.hero{padding:4.5rem 2.5rem 2.5rem;border-bottom:1px solid var(--border);}
+.ch{font-size:11px;letter-spacing:0.12em;text-transform:uppercase;color:var(--ink3);margin-bottom:1.5rem;}
+h1{font-family:'Playfair Display',Georgia,serif;font-size:clamp(2.6rem,5.5vw,4.2rem);font-weight:900;line-height:1.06;max-width:820px;margin-bottom:1.5rem;letter-spacing:-0.01em;}
+h1 em{font-style:italic;font-weight:400;}
+.hsub{font-size:16px;font-weight:300;line-height:1.8;max-width:560px;color:var(--ink2);margin-bottom:2.5rem;}
+.sec{padding:3rem 2.5rem;border-bottom:1px solid var(--border);}
+.slbl{font-size:11px;letter-spacing:0.1em;text-transform:uppercase;color:var(--ink3);margin-bottom:1rem;}
+h2{font-family:'Playfair Display',Georgia,serif;font-size:clamp(1.5rem,3vw,2.1rem);font-weight:700;line-height:1.2;max-width:640px;margin-bottom:1rem;}
+.sbody{font-size:15px;font-weight:300;line-height:1.8;color:var(--ink2);max-width:580px;margin-bottom:1.5rem;}
+.sitalic{font-family:'Playfair Display',Georgia,serif;font-style:italic;font-size:clamp(1.1rem,2.5vw,1.55rem);line-height:1.45;max-width:560px;padding-left:1.5rem;border-left:2px solid rgba(26,26,24,0.18);margin-bottom:1.75rem;}
 
-  .eyebrow { font-family: 'DM Mono', monospace; font-size: 11px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--color-text-secondary); margin-bottom: 8px; }
-  .headline { font-family: 'DM Serif Display', serif; font-size: 28px; font-weight: 400; color: var(--color-text-primary); line-height: 1.2; margin-bottom: 6px; }
-  .subhead { font-size: 14px; color: var(--color-text-secondary); line-height: 1.6; margin-bottom: 2rem; }
+/* mirror table */
+.mirror-grid{display:grid;grid-template-columns:1fr 48px 1fr;gap:0;margin:1.5rem 0 0;}
+.mirror-header{padding:10px 14px;font-size:11px;font-weight:500;letter-spacing:0.08em;text-transform:uppercase;}
+.mirror-header.human{background:#e6f1fb;color:#185fa5;}
+.mirror-header.cattle{background:var(--gl);color:var(--green);}
+.mirror-axis-hdr{background:var(--cream);display:flex;align-items:center;justify-content:center;padding:10px 0;border-bottom:1px solid var(--border);}
+.mirror-cell{padding:10px 14px;font-size:13px;line-height:1.55;border-bottom:1px solid var(--border);color:var(--ink);}
+.mirror-cell.human{background:rgba(230,241,251,0.35);}
+.mirror-cell.cattle{background:rgba(232,240,235,0.35);}
+.mirror-axis{display:flex;align-items:center;justify-content:center;padding:10px 0;border-bottom:1px solid var(--border);}
+.mirror-axis-label{font-size:9px;font-weight:500;letter-spacing:0.06em;text-transform:uppercase;color:var(--ink3);writing-mode:vertical-rl;text-orientation:mixed;transform:rotate(180deg);}
+.mirror-advantage{padding:10px 14px;font-size:13px;line-height:1.55;color:var(--green);background:var(--gl);font-weight:500;border-bottom:1px solid var(--border);}
+.mirror-neutral{padding:10px 14px;font-size:13px;line-height:1.55;color:#185fa5;background:#e6f1fb;border-bottom:1px solid var(--border);}
+@media(max-width:580px){.mirror-grid{grid-template-columns:1fr;}.mirror-axis,.mirror-axis-hdr{display:none;}.mirror-header.cattle{margin-top:1rem;}}
 
-  .section-label { font-family: 'DM Mono', monospace; font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--color-text-secondary); margin-bottom: 12px; padding-bottom: 6px; border-bottom: 0.5px solid var(--color-border-tertiary); }
+/* competitor cards */
+.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:14px;margin:1.5rem 0;}
+.card{border:1px solid var(--border);padding:1.25rem;background:var(--cream);}
+.card.featured{border:2px solid var(--green);}
+.ctag{font-size:10px;letter-spacing:0.1em;text-transform:uppercase;color:var(--ink3);margin-bottom:6px;}
+.ct{font-size:14px;font-weight:500;margin-bottom:3px;}
+.csub{font-size:12px;color:var(--ink3);margin-bottom:8px;}
+.cb{font-size:12px;color:var(--ink2);line-height:1.65;}
+.cb strong{color:var(--ink);font-weight:500;}
+.badge{display:inline-block;margin-bottom:8px;font-size:10px;font-weight:500;padding:3px 10px;letter-spacing:0.04em;}
+.badge-legacy{background:rgba(26,26,24,0.06);color:var(--ink3);}
+.badge-emerging{background:#fef3e2;color:#854f0b;}
+.badge-platform{background:var(--gl);color:var(--green);}
 
-  /* Mirror table */
-  .mirror-grid { display: grid; grid-template-columns: 1fr 48px 1fr; gap: 0; margin-bottom: 2rem; }
-  .mirror-col { }
-  .mirror-header { padding: 10px 14px; font-size: 11px; font-family: 'DM Mono', monospace; letter-spacing: 0.08em; text-transform: uppercase; }
-  .mirror-header.human { background: #E6F1FB; color: #185FA5; border-radius: var(--border-radius-md) var(--border-radius-md) 0 0; }
-  .mirror-header.cattle { background: #EAF3DE; color: #3B6D11; border-radius: var(--border-radius-md) var(--border-radius-md) 0 0; }
-  .mirror-row { display: contents; }
-  .mirror-cell { padding: 9px 14px; font-size: 13px; line-height: 1.5; border-bottom: 0.5px solid var(--color-border-tertiary); color: var(--color-text-primary); }
-  .mirror-cell.human { background: #f4f9ff; }
-  .mirror-cell.cattle { background: #f4faf4; }
-  .mirror-axis { display: flex; align-items: center; justify-content: center; padding: 9px 0; border-bottom: 0.5px solid var(--color-border-tertiary); }
-  .mirror-axis-label { font-family: 'DM Mono', monospace; font-size: 9px; letter-spacing: 0.05em; color: var(--color-text-secondary); writing-mode: vertical-rl; text-orientation: mixed; transform: rotate(180deg); }
-  .mirror-axis.header { background: var(--color-background-secondary); font-size: 9px; font-family: 'DM Mono', monospace; color: var(--color-text-secondary); border-radius: 0; }
-  .mirror-advantage { padding: 9px 14px; font-size: 12px; color: #3B6D11; background: #EAF3DE; font-weight: 500; border-bottom: 0.5px solid var(--color-border-tertiary); }
-  .mirror-neutral { padding: 9px 14px; font-size: 12px; color: #185FA5; background: #E6F1FB; border-bottom: 0.5px solid var(--color-border-tertiary); }
+/* chart */
+.chart-container{position:relative;width:100%;height:280px;margin:1.5rem 0;}
+.footnote{font-size:11px;color:var(--ink3);line-height:1.6;}
 
-  /* Competitor cards */
-  .competitor-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 12px; margin-bottom: 2rem; }
-  .comp-card { background: var(--color-background-primary); border: 0.5px solid var(--color-border-tertiary); border-radius: var(--border-radius-lg); padding: 1rem; }
-  .comp-card.cachcow { border: 2px solid #2D6A4F; }
-  .comp-name { font-size: 13px; font-weight: 500; color: var(--color-text-primary); margin-bottom: 2px; }
-  .comp-parent { font-size: 11px; color: var(--color-text-secondary); margin-bottom: 10px; }
-  .comp-badge { display: inline-block; font-size: 10px; font-family: 'DM Mono', monospace; padding: 2px 8px; border-radius: 4px; margin-bottom: 10px; }
-  .badge-legacy { background: #F1EFE8; color: #5F5E5A; }
-  .badge-emerging { background: #FAEEDA; color: #854F0B; }
-  .badge-platform { background: #EAF3DE; color: #27500A; }
-  .comp-stat { font-size: 12px; color: var(--color-text-secondary); line-height: 1.7; }
-  .comp-stat strong { color: var(--color-text-primary); font-weight: 500; }
-  .featured-badge { background: #EAF3DE; color: #27500A; font-size: 11px; padding: 3px 10px; border-radius: 4px; font-family: 'DM Mono', monospace; display: inline-block; margin-bottom: 8px; letter-spacing: 0.05em; }
+/* moat bars */
+.moat-row{display:grid;grid-template-columns:130px 1fr;gap:16px;margin-bottom:14px;align-items:start;}
+@media(max-width:500px){.moat-row{grid-template-columns:1fr;}}
+.moat-lbl{font-size:12px;font-weight:500;color:var(--ink3);padding-top:2px;}
+.moat-pair{display:grid;grid-template-columns:1fr 1fr;gap:8px;}
+.moat-sub{font-size:10px;color:var(--ink3);margin-bottom:3px;}
+.bar-bg{height:24px;background:rgba(26,26,24,0.05);border-radius:4px;overflow:hidden;}
+.bar-fill{height:100%;border-radius:4px;display:flex;align-items:center;padding-left:8px;font-size:11px;font-weight:500;}
+.bar-human{background:#b5d4f4;color:#185fa5;}
+.bar-cattle{background:rgba(26,61,43,0.25);color:var(--green);}
+.moat-note{font-size:11px;color:var(--ink3);margin-top:4px;grid-column:1/-1;}
+.moat-big{font-family:'Playfair Display',Georgia,serif;font-size:1.4rem;font-weight:900;line-height:1;}
+.moat-big.human{color:#185fa5;}
+.moat-big.cattle{color:var(--green);}
 
-  /* Revenue chart section */
-  .chart-container { position: relative; width: 100%; height: 280px; margin-bottom: 2rem; }
+/* thesis */
+.hl{background:var(--green);padding:2.5rem;margin:1.5rem 0;}
+.hl h2{color:#fff;max-width:100%;}
+.hl .sbody{color:rgba(255,255,255,0.82);max-width:100%;}
+.hl .sitalic{color:#fff;border-left-color:rgba(255,255,255,0.3);}
+.hl-attr{font-size:12px;color:rgba(255,255,255,0.5);margin-top:0.5rem;}
 
-  /* Scale cards */
-  .scale-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 2rem; }
-  .scale-card { background: var(--color-background-secondary); border-radius: var(--border-radius-md); padding: 1rem; }
-  .scale-number { font-family: 'DM Serif Display', serif; font-size: 26px; color: var(--color-text-primary); }
-  .scale-label { font-size: 12px; color: var(--color-text-secondary); margin-top: 2px; line-height: 1.5; }
-  .scale-note { font-size: 11px; font-family: 'DM Mono', monospace; color: var(--color-text-secondary); margin-top: 6px; }
+.nums{display:grid;grid-template-columns:repeat(auto-fit,minmax(148px,1fr));gap:1px;background:var(--border);border:1px solid var(--border);margin:1.5rem 0 2rem;}
+.nc{background:var(--cream);padding:1.5rem 1.25rem;}
+.nb{font-family:'Playfair Display',Georgia,serif;font-size:2.3rem;font-weight:900;line-height:1;margin-bottom:6px;}
+.nl{font-size:12px;color:var(--ink3);line-height:1.4;}
 
-  /* Moat section */
-  .moat-row { display: grid; grid-template-columns: 140px 1fr; gap: 12px; margin-bottom: 10px; align-items: start; }
-  .moat-label { font-size: 12px; font-family: 'DM Mono', monospace; color: var(--color-text-secondary); padding-top: 2px; }
-  .moat-bar-wrap { position: relative; }
-  .moat-bar-bg { height: 24px; background: var(--color-background-secondary); border-radius: 4px; overflow: hidden; }
-  .moat-bar-fill { height: 100%; border-radius: 4px; display: flex; align-items: center; padding-left: 8px; font-size: 11px; font-weight: 500; }
-  .bar-human { background: #B5D4F4; color: #185FA5; }
-  .bar-cattle { background: #C0DD97; color: #3B6D11; }
-  .moat-note { font-size: 11px; color: var(--color-text-secondary); margin-top: 3px; }
+.footer{padding:2rem 2.5rem;border-top:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px;}
+.fb{font-family:'Libre Baskerville',Georgia,serif;font-size:1rem;font-weight:700;color:var(--ink);}
+.fl{font-size:12px;color:var(--ink3);text-decoration:none;}
+.fl:hover{color:var(--ink);}
 
-  /* CTA */
-  .thesis-box { background: var(--color-background-secondary); border-radius: var(--border-radius-lg); padding: 1.25rem 1.5rem; border-left: 3px solid #2D6A4F; margin-top: 1rem; }
-  .thesis-text { font-family: 'DM Serif Display', serif; font-size: 17px; font-style: italic; color: var(--color-text-primary); line-height: 1.5; }
-  .thesis-sub { font-size: 12px; color: var(--color-text-secondary); margin-top: 8px; }
-
-  .section { margin-bottom: 2.5rem; }
-
-  .divider { border: none; border-top: 0.5px solid var(--color-border-tertiary); margin: 2rem 0; }
-
-  .footnote { font-size: 11px; color: var(--color-text-secondary); font-family: 'DM Mono', monospace; }
+@media(prefers-color-scheme:dark){
+:root{--cream:#1a1a18;--ink:#f0efe8;--ink2:#b8b8b0;--ink3:#8a8a82;--green:#2a8a5a;--gl:rgba(42,138,90,0.15);--border:rgba(240,239,232,0.1);}
+body{background:var(--cream);}
+.hl{background:#0d1f16;}
+.hl h2{color:#f0efe8;}
+.hl .sbody{color:rgba(240,239,232,0.82);}
+.hl .sitalic{color:#f0efe8;border-left-color:rgba(240,239,232,0.2);}
+.hl-attr{color:rgba(240,239,232,0.35);}
+.nc{background:var(--cream);}
+.card{background:var(--cream);border-color:var(--border);}
+.card.featured{border-color:#5dcaa5;}
+.nums{background:var(--border);border-color:var(--border);}
+.sitalic{border-left-color:rgba(240,239,232,0.18);}
+.badge-legacy{background:rgba(240,239,232,0.08);color:#8a8a82;}
+.badge-emerging{background:rgba(186,117,23,0.18);color:#e4a83a;}
+.badge-platform{background:var(--gl);color:#5dcaa5;}
+.mirror-header.human{background:rgba(24,95,165,0.18);color:#85b7eb;}
+.mirror-header.cattle{background:var(--gl);color:#5dcaa5;}
+.mirror-cell.human{background:rgba(24,95,165,0.06);}
+.mirror-cell.cattle{background:rgba(42,138,90,0.06);}
+.mirror-advantage{background:rgba(42,138,90,0.15);color:#5dcaa5;}
+.mirror-neutral{background:rgba(24,95,165,0.15);color:#85b7eb;}
+.bar-human{background:rgba(24,95,165,0.35);color:#85b7eb;}
+.bar-cattle{background:rgba(42,138,90,0.35);color:#5dcaa5;}
+.bar-bg{background:rgba(240,239,232,0.06);}
+.moat-big.human{color:#85b7eb;}
+.moat-big.cattle{color:#5dcaa5;}
+}
 </style>
+</head>
+<body>
+<div class="wrap">
 
-<h2 class="sr-only">Competitive landscape isomorphism: human wearables (Oura, WHOOP, Function Health) mapped to cattle intelligence (CacheCow vs. Merck, Zoetis, Halter)</h2>
+  <div class="topbar">
+    <span class="brand">CacheCow</span>
+    <span class="top-r">Competitive Intelligence</span>
+  </div>
 
-<div class="page">
+  <nav class="site-nav">
+    <a class="snl" href="cachecow_rancher.html">For ranchers</a>
+    <a class="snl" href="cachecow_investor.html">Investors</a>
+    <a class="snl" href="cachecow_hardware.html">Hardware + subscription</a>
+    <a class="snl" href="cachecow_data.html">Data licensing</a>
+    <a class="snl" href="cachecow_platform.html">Movement intelligence</a>
+    <a class="snl" href="cachecow_mii.html">Motion Intelligence Index</a>
+    <a class="snl" href="cachecow_weather.html">Weather intelligence</a>
+  </nav>
 
-  <div class="eyebrow">ForcedField / CacheCow — Competitive Intelligence</div>
-  <div class="headline">The Wearables Isomorphism</div>
-  <div class="subhead">Human health monitoring built three $10B companies. Cattle intelligence is the same market — larger TAM, higher B2B LTV, near-zero churn, and no Oura yet.</div>
+  <div class="hero">
+    <p class="ch">Competitive Analysis — The Wearables Isomorphism</p>
+    <h1>Three companies built $30B<br>on wrists.<br><em>Cattle is the same market, without the churn.</em></h1>
+    <p class="hsub">Human health monitoring built Oura, WHOOP, and Function Health. Cattle intelligence is the same architecture — larger TAM, higher B2B LTV, near-zero churn, and no platform leader yet.</p>
+  </div>
 
-  <hr class="divider">
-
-  <div class="section">
-    <div class="section-label">Structural mirror — human vs. cattle</div>
+  <!-- STRUCTURAL MIRROR -->
+  <div class="sec">
+    <p class="slbl">Structural mirror — human vs. cattle</p>
+    <h2>Same architecture. Different body. Structurally superior business.</h2>
     <div class="mirror-grid">
       <div class="mirror-header human">Human wearables</div>
-      <div style="background:var(--color-background-secondary); border-radius:0; display:flex; align-items:center; justify-content:center; font-size:9px; font-family:'DM Mono',monospace; color:var(--color-text-secondary); padding:10px 0; border-bottom:0.5px solid var(--color-border-tertiary);"></div>
+      <div class="mirror-axis-hdr"></div>
       <div class="mirror-header cattle">Cattle intelligence</div>
 
       <div class="mirror-cell human">Ring / band / blood panel</div>
@@ -174,171 +191,162 @@
     </div>
   </div>
 
-  <div class="section">
-    <div class="section-label">Competitive landscape — cattle monitoring incumbents</div>
-    <div class="competitor-grid">
-
-      <div class="comp-card">
-        <div class="comp-name">Allflex / SenseHub</div>
-        <div class="comp-parent">Merck Animal Health</div>
-        <div><span class="comp-badge badge-legacy">Legacy hardware</span></div>
-        <div class="comp-stat">
+  <!-- COMPETITOR LANDSCAPE -->
+  <div class="sec">
+    <p class="slbl">Competitive landscape — cattle monitoring incumbents</p>
+    <h2>Four incumbents. None built for intelligence.</h2>
+    <div class="cards">
+      <div class="card">
+        <p class="ct">Allflex / SenseHub</p>
+        <p class="csub">Merck Animal Health</p>
+        <span class="badge badge-legacy">Legacy hardware</span>
+        <p class="cb">
           <strong>$160–200</strong> / animal hardware<br>
           <strong>$40–44</strong> / animal / yr service<br>
           <strong>85–90%</strong> heat detection accuracy<br>
           <strong>18–24 mo</strong> payback period<br>
           No AI layer. Battery replacement yr 3–4.
-        </div>
+        </p>
       </div>
-
-      <div class="comp-card">
-        <div class="comp-name">SCR Dairy</div>
-        <div class="comp-parent">Merck Animal Health</div>
-        <div><span class="comp-badge badge-legacy">Legacy hardware</span></div>
-        <div class="comp-stat">
+      <div class="card">
+        <p class="ct">SCR Dairy</p>
+        <p class="csub">Merck Animal Health</p>
+        <span class="badge badge-legacy">Legacy hardware</span>
+        <p class="cb">
           <strong>$180–250</strong> / animal hardware<br>
           <strong>$48–72</strong> / animal / yr service<br>
           Rumination + activity tracking<br>
           <strong>20–30 mo</strong> payback period<br>
           No predictive AI. Point solution.
-        </div>
+        </p>
       </div>
-
-      <div class="comp-card">
-        <div class="comp-name">Halter</div>
-        <div class="comp-parent">NZ startup (raised $75M)</div>
-        <div><span class="comp-badge badge-emerging">Emerging</span></div>
-        <div class="comp-stat">
+      <div class="card">
+        <p class="ct">Halter</p>
+        <p class="csub">NZ startup (raised $75M)</p>
+        <span class="badge badge-emerging">Emerging</span>
+        <p class="cb">
           <strong>$100–150</strong> / cow / yr<br>
           GPS + solar collar<br>
           Virtual fencing only<br>
           Single-purpose — no health, no breeding, no AI mesh<br>
           No platform architecture.
-        </div>
+        </p>
       </div>
-
-      <div class="comp-card">
-        <div class="comp-name">Quantified Ag</div>
-        <div class="comp-parent">Standalone</div>
-        <div><span class="comp-badge badge-emerging">Niche</span></div>
-        <div class="comp-stat">
+      <div class="card">
+        <p class="ct">Quantified Ag</p>
+        <p class="csub">Standalone</p>
+        <span class="badge badge-emerging">Niche</span>
+        <p class="cb">
           <strong>$50–75</strong> / animal hardware<br>
           Temperature monitoring only<br>
           <strong>$10–20K</strong> platform license / yr<br>
           24–36 mo payback<br>
           No movement intelligence.
-        </div>
+        </p>
       </div>
-
-      <div class="comp-card cachcow">
-        <div class="featured-badge">CacheCow</div>
-        <div class="comp-name">ForcedField</div>
-        <div class="comp-parent">Platform-first architecture</div>
-        <div><span class="comp-badge badge-platform">Intelligence platform</span></div>
-        <div class="comp-stat">
+      <div class="card featured">
+        <span class="badge badge-platform">Intelligence platform</span>
+        <p class="ct">CacheCow</p>
+        <p class="csub">ForcedField — Platform-first architecture</p>
+        <p class="cb">
           <strong>$0</strong> hardware upfront<br>
           <strong>$122K–$1.2M</strong> / ranch / yr<br>
           9-component: UWB + bioelectric + AI mesh<br>
           <strong>26 TOPS</strong> on-device processing<br>
           5–20yr locked contracts. Data flywheel.
-        </div>
+        </p>
       </div>
-
     </div>
   </div>
 
-  <div class="section">
-    <div class="section-label">Revenue comparison — 2,000 head ranch · 5 years</div>
+  <!-- REVENUE COMPARISON -->
+  <div class="sec">
+    <p class="slbl">Revenue comparison — 2,000 head ranch · 5 years</p>
+    <h2>Same ranch. Radically different outcome.</h2>
     <div class="chart-container">
-      <canvas id="revenueChart" role="img" aria-label="Bar chart comparing 5-year customer net benefit for Allflex, SCR Dairy, Halter, and CacheCow on a 2000-head ranch. CacheCow delivers $2.275M net benefit versus losses or minimal gains for incumbents.">CacheCow delivers $2.275M net benefit vs. competitors who deliver $0.4M–$1.2M or negative net benefit at comparable ranch size.</canvas>
+      <canvas id="revenueChart" aria-label="Bar chart comparing 5-year customer net benefit for Allflex, SCR Dairy, Halter, and CacheCow."></canvas>
     </div>
-    <div class="footnote">* Net benefit = cumulative value created minus total cost of ownership over 5 years on a 2,000-head operation. CacheCow figure based on $700K/yr value creation at 35% capture rate with $0 upfront hardware cost.</div>
+    <p class="footnote">* Net benefit = cumulative value created minus total cost of ownership over 5 years on a 2,000-head operation. CacheCow figure based on $700K/yr value creation at 35% capture rate with $0 upfront hardware cost.</p>
   </div>
 
-  <hr class="divider">
-
-  <div class="section">
-    <div class="section-label">Why the cattle moat is deeper than consumer wearables</div>
+  <!-- MOAT COMPARISON -->
+  <div class="sec">
+    <p class="slbl">Why the cattle moat is deeper than consumer wearables</p>
+    <h2>Every structural advantage favours the ranch.</h2>
 
     <div class="moat-row">
-      <div class="moat-label">Switching cost</div>
-      <div class="moat-bar-wrap">
-        <div style="display:grid; grid-template-columns:1fr 1fr; gap:6px;">
-          <div>
-            <div style="font-size:10px; color:var(--color-text-secondary); margin-bottom:3px;">Human (Oura/WHOOP)</div>
-            <div class="moat-bar-bg"><div class="moat-bar-fill bar-human" style="width:35%;">Low–Med</div></div>
-          </div>
-          <div>
-            <div style="font-size:10px; color:var(--color-text-secondary); margin-bottom:3px;">Cattle (CacheCow)</div>
-            <div class="moat-bar-bg"><div class="moat-bar-fill bar-cattle" style="width:90%;">Extreme</div></div>
-          </div>
+      <p class="moat-lbl">Switching cost</p>
+      <div>
+        <div class="moat-pair">
+          <div><p class="moat-sub">Human (Oura/WHOOP)</p><div class="bar-bg"><div class="bar-fill bar-human" style="width:35%;">Low–Med</div></div></div>
+          <div><p class="moat-sub">Cattle (CacheCow)</p><div class="bar-bg"><div class="bar-fill bar-cattle" style="width:90%;">Extreme</div></div></div>
         </div>
-        <div class="moat-note">5–20yr contracts + historical baselines make switching economically irrational</div>
+        <p class="moat-note">5–20yr contracts + historical baselines make switching economically irrational</p>
       </div>
     </div>
 
     <div class="moat-row">
-      <div class="moat-label">Data network effect</div>
-      <div class="moat-bar-wrap">
-        <div style="display:grid; grid-template-columns:1fr 1fr; gap:6px;">
-          <div>
-            <div style="font-size:10px; color:var(--color-text-secondary); margin-bottom:3px;">Human</div>
-            <div class="moat-bar-bg"><div class="moat-bar-fill bar-human" style="width:60%;">Moderate</div></div>
-          </div>
-          <div>
-            <div style="font-size:10px; color:var(--color-text-secondary); margin-bottom:3px;">Cattle</div>
-            <div class="moat-bar-bg"><div class="moat-bar-fill bar-cattle" style="width:85%;">Strong</div></div>
-          </div>
+      <p class="moat-lbl">Data network effect</p>
+      <div>
+        <div class="moat-pair">
+          <div><p class="moat-sub">Human</p><div class="bar-bg"><div class="bar-fill bar-human" style="width:60%;">Moderate</div></div></div>
+          <div><p class="moat-sub">Cattle</p><div class="bar-bg"><div class="bar-fill bar-cattle" style="width:85%;">Strong</div></div></div>
         </div>
-        <div class="moat-note">More ranches = better disease prediction models for all ranches on the network</div>
+        <p class="moat-note">More ranches = better disease prediction models for all ranches on the network</p>
       </div>
     </div>
 
     <div class="moat-row">
-      <div class="moat-label">B2B vs. consumer</div>
-      <div class="moat-bar-wrap">
-        <div style="display:grid; grid-template-columns:1fr 1fr; gap:6px;">
-          <div>
-            <div style="font-size:10px; color:var(--color-text-secondary); margin-bottom:3px;">Consumer churn risk</div>
-            <div class="moat-bar-bg"><div class="moat-bar-fill bar-human" style="width:55%;">High</div></div>
-          </div>
-          <div>
-            <div style="font-size:10px; color:var(--color-text-secondary); margin-bottom:3px;">Ranch churn risk</div>
-            <div class="moat-bar-bg"><div class="moat-bar-fill bar-cattle" style="width:8%;">~0</div></div>
-          </div>
+      <p class="moat-lbl">B2B vs. consumer</p>
+      <div>
+        <div class="moat-pair">
+          <div><p class="moat-sub">Consumer churn risk</p><div class="bar-bg"><div class="bar-fill bar-human" style="width:55%;">High</div></div></div>
+          <div><p class="moat-sub">Ranch churn risk</p><div class="bar-bg"><div class="bar-fill bar-cattle" style="width:8%;">~0</div></div></div>
         </div>
-        <div class="moat-note">Ranches don't cancel because they had a bad week. Cattle don't sleep in a drawer.</div>
+        <p class="moat-note">Ranches don't cancel because they had a bad week. Cattle don't sleep in a drawer.</p>
       </div>
     </div>
 
     <div class="moat-row">
-      <div class="moat-label">Path to $1B ARR</div>
-      <div class="moat-bar-wrap">
-        <div style="display:grid; grid-template-columns:1fr 1fr; gap:6px;">
+      <p class="moat-lbl">Path to $1B ARR</p>
+      <div>
+        <div class="moat-pair">
           <div>
-            <div style="font-size:10px; color:var(--color-text-secondary); margin-bottom:3px;">Human: devices needed</div>
-            <div style="font-size:20px; font-family:'DM Serif Display',serif; color:#185FA5;">5,500,000</div>
-            <div style="font-size:10px; color:var(--color-text-secondary);">rings at ~$182 blended ARPU</div>
+            <p class="moat-sub">Human: devices needed</p>
+            <p class="moat-big human">5,500,000</p>
+            <p class="moat-sub">rings at ~$182 blended ARPU</p>
           </div>
           <div>
-            <div style="font-size:10px; color:var(--color-text-secondary); margin-bottom:3px;">Cattle: ranches needed</div>
-            <div style="font-size:20px; font-family:'DM Serif Display',serif; color:#2D6A4F;">~4,000</div>
-            <div style="font-size:10px; color:var(--color-text-secondary);">at $250K avg contract — 0.4% of North America</div>
+            <p class="moat-sub">Cattle: ranches needed</p>
+            <p class="moat-big cattle">~4,000</p>
+            <p class="moat-sub">at $250K avg contract — 0.4% of North America</p>
           </div>
         </div>
       </div>
     </div>
   </div>
 
-  <div class="thesis-box">
-    <div class="thesis-text">"Oura needed 5.5 million customers to reach $1B. CacheCow needs 4,000 ranches. The cattle market is not a smaller version of Oura — it is a structurally superior business."</div>
-    <div class="thesis-sub">ForcedField / CacheCow competitive thesis · April 2026</div>
+  <!-- THESIS -->
+  <div class="sec" style="border-bottom:none;">
+    <div class="hl">
+      <p class="slbl" style="color:rgba(255,255,255,0.45);">Competitive thesis</p>
+      <p class="sitalic">"Oura needed 5.5 million customers to reach $1B. CacheCow needs 4,000 ranches. The cattle market is not a smaller version of Oura — it is a structurally superior business."</p>
+      <p class="hl-attr">ForcedField / CacheCow · April 2026</p>
+    </div>
+  </div>
+
+  <div class="footer">
+    <span class="fb">CacheCow</span>
+    <span class="fl">ForcedField Technologies · Confidential · April 2026</span>
   </div>
 
 </div>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
 <script>
+const isDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+const gridColor = isDark ? 'rgba(240,239,232,0.06)' : 'rgba(0,0,0,0.05)';
+const tickColor = isDark ? '#8a8a82' : '#888780';
 const ctx = document.getElementById('revenueChart').getContext('2d');
 new Chart(ctx, {
   type: 'bar',
@@ -347,8 +355,12 @@ new Chart(ctx, {
     datasets: [{
       label: '5-yr customer net benefit ($USD)',
       data: [900000, 840000, 350000, 2275000],
-      backgroundColor: ['#B4B2A9', '#B4B2A9', '#FAC775', '#63992254'],
-      borderColor: ['#888780', '#888780', '#BA7517', '#2D6A4F'],
+      backgroundColor: isDark
+        ? ['rgba(180,178,169,0.25)', 'rgba(180,178,169,0.25)', 'rgba(228,168,58,0.3)', 'rgba(42,138,90,0.3)']
+        : ['#B4B2A9', '#B4B2A9', '#FAC775', 'rgba(99,153,34,0.33)'],
+      borderColor: isDark
+        ? ['#8a8a82', '#8a8a82', '#e4a83a', '#5dcaa5']
+        : ['#888780', '#888780', '#BA7517', '#2D6A4F'],
       borderWidth: 1.5,
       borderRadius: 4,
     }]
@@ -358,30 +370,15 @@ new Chart(ctx, {
     maintainAspectRatio: false,
     plugins: {
       legend: { display: false },
-      tooltip: {
-        callbacks: {
-          label: (ctx) => ' Net benefit: $' + ctx.raw.toLocaleString()
-        }
-      }
+      tooltip: { callbacks: { label: (c) => ' Net benefit: $' + c.raw.toLocaleString() } }
     },
     scales: {
-      x: {
-        ticks: { font: { size: 12 }, color: '#888780', autoSkip: false },
-        grid: { display: false },
-        border: { display: false }
-      },
-      y: {
-        ticks: {
-          callback: v => '$' + (v / 1000000).toFixed(1) + 'M',
-          font: { size: 11 },
-          color: '#888780'
-        },
-        grid: { color: 'rgba(0,0,0,0.05)' },
-        border: { display: false },
-        min: 0,
-        max: 2600000
-      }
+      x: { ticks: { font: { size: 12 }, color: tickColor, autoSkip: false }, grid: { display: false }, border: { display: false } },
+      y: { ticks: { callback: v => '$' + (v/1000000).toFixed(1) + 'M', font: { size: 11 }, color: tickColor }, grid: { color: gridColor }, border: { display: false }, min: 0, max: 2600000 }
     }
   }
 });
 </script>
+<script src="../assets/menu.js"></script>
+</body>
+</html>
