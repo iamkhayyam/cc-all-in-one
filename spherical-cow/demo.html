@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Spherical Cow — Demo</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,600;1,400&family=DM+Sans:wght@300;400;500&display=swap');
+:root {
+  --color-text-primary: #1a1a18;
+  --color-text-secondary: #5a5a56;
+  --color-text-tertiary: #9a9a94;
+  --color-background-primary: #ffffff;
+  --color-background-secondary: #f5f4f0;
+  --border: rgba(26,26,24,0.12);
+  --ink: #1a1a18; --ink2: #5a5a56; --ink3: #9a9a94;
+}
+@media (prefers-color-scheme: dark) {
+  :root {
+    --color-text-primary: #f0efe8; --color-text-secondary: #b8b8b0; --color-text-tertiary: #8a8a82;
+    --color-background-primary: #1a1a18; --color-background-secondary: #242420;
+    --border: rgba(240,239,232,0.1);
+    --ink: #f0efe8; --ink2: #b8b8b0; --ink3: #8a8a82;
+  }
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: 'DM Sans', sans-serif; background: var(--color-background-primary); color: var(--color-text-primary); }
+.wrap { max-width: 800px; margin: 0 auto; padding: 4rem 2rem; }
+h1 { font-family: 'Playfair Display', Georgia, serif; font-size: 2.5rem; font-weight: 600; margin-bottom: 1rem; }
+h1 em { font-style: italic; color: var(--color-text-secondary); }
+p { font-size: 16px; line-height: 1.8; color: var(--color-text-secondary); max-width: 560px; margin-bottom: 1.5rem; }
+a { color: var(--color-text-primary); }
+pre { background: var(--color-background-secondary); padding: 1.5rem; border-radius: 8px; overflow-x: auto; font-size: 13px; line-height: 1.6; margin: 1.5rem 0; color: var(--color-text-secondary); }
+code { font-family: 'DM Mono', 'SF Mono', monospace; }
+.section { padding: 2rem 0; border-bottom: 1px solid var(--border); }
+.section:last-child { border-bottom: none; }
+h2 { font-family: 'Playfair Display', Georgia, serif; font-size: 1.4rem; font-weight: 600; margin-bottom: 0.75rem; }
+.label { font-size: 11px; font-weight: 500; letter-spacing: 0.1em; text-transform: uppercase; color: var(--color-text-tertiary); margin-bottom: 0.5rem; }
+.footer { padding: 2rem 0; font-size: 12px; color: var(--color-text-tertiary); }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <p class="label">Standalone Component</p>
+  <h1>Spherical Cow <em>Demo</em></h1>
+  <p>A floating menu component with personality. Mouse-following logo, GSAP fullscreen menu, virtual fencing, gold shimmer, and sequential page navigation.</p>
+
+  <div class="section">
+    <h2>What you're seeing</h2>
+    <p>The floating cow logo follows your cursor with a slow ease. After 5 seconds of inactivity it drifts to the bottom-center and shimmers gold. Click it to open the fullscreen menu. It repels from all links and buttons on the page.</p>
+  </div>
+
+  <div class="section">
+    <h2>Script tag usage</h2>
+    <pre><code>&lt;script&gt;
+var myConfig = {
+  menu: {
+    brand: 'My Brand',
+    columns: [
+      {
+        sections: [
+          { label: 'Pages', links: [
+            { title: 'Home', href: '/' },
+            { title: 'About', href: '/about' }
+          ]}
+        ],
+        tagline: 'Built with Spherical Cow'
+      },
+      {
+        sections: [
+          { label: 'More', links: [
+            { title: 'Blog', href: '/blog' },
+            { title: 'Contact', href: '/contact' }
+          ]}
+        ],
+        showClose: true
+      }
+    ]
+  }
+};
+&lt;/script&gt;
+&lt;script src="spherical-cow.js" data-config="myConfig"&gt;&lt;/script&gt;</code></pre>
+  </div>
+
+  <div class="section">
+    <h2>ES module usage</h2>
+    <pre><code>import { SphericalCow } from './spherical-cow.js';
+
+SphericalCow.init({
+  logo: '&lt;svg&gt;...&lt;/svg&gt;',  // optional custom SVG
+  idle: 5000,                    // ms before idle drift
+  menu: { brand: 'My Site', columns: [...] },
+  nav: [                         // optional prev/next pages
+    { path: '/page1', href: '/page1', title: 'Page One' },
+    { path: '/page2', href: '/page2', title: 'Page Two' },
+  ]
+});</code></pre>
+  </div>
+
+  <div class="section">
+    <h2>Features</h2>
+    <p>Mouse-following with slow lerp easing. Idle drift to bottom-center of viewport. Gold shimmer animation on idle. GSAP-powered fullscreen clip-path menu. Virtual fencing (repels from all clickable elements). Click passthrough when overlapping interactive elements. Optional sequential prev/next page navigation. Nav glow when visible (mutually exclusive with cow shimmer). Dark mode support. Responsive.</p>
+  </div>
+
+  <div class="section">
+    <h2>Try hovering these links</h2>
+    <p>The cow will dodge: <a href="#">Link One</a> &middot; <a href="#">Link Two</a> &middot; <a href="#">Link Three</a></p>
+    <p><a href="#">Another link down here</a> to test virtual fencing.</p>
+  </div>
+
+  <div class="footer">Spherical Cow v1.0.0 &middot; MIT License &middot; ForcedField Technologies</div>
+</div>
+
+<script>
+var demoConfig = {
+  idle: 5000,
+  menu: {
+    brand: 'Spherical Cow',
+    columns: [
+      {
+        sections: [
+          { label: 'Demo Pages', links: [
+            { title: 'Home', href: '#' },
+            { title: 'Features', href: '#' },
+            { title: 'Documentation', href: '#' }
+          ]}
+        ],
+        tagline: 'A component with personality'
+      },
+      {
+        sections: [
+          { label: 'Resources', links: [
+            { title: 'GitHub', href: '#' },
+            { title: 'npm', href: '#' },
+            { title: 'Examples', href: '#' }
+          ]},
+          { label: 'About', links: [
+            { title: 'ForcedField Technologies', href: '#' },
+            { title: 'CacheCow', href: '#' }
+          ]}
+        ],
+        showClose: true
+      }
+    ]
+  }
+};
+</script>
+<script src="spherical-cow.js" data-config="demoConfig"></script>
+</body>
+</html>
