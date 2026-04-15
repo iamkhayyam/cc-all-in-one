@@ -169,6 +169,55 @@
       .cc-fs-menu .cc-menu-divider { display: none; }
       .cc-fs-menu .cc-menu-link { font-size: 1.3rem; }
     }
+
+    /* ── sequential page nav ── */
+    .cc-page-nav {
+      max-width: 900px;
+      margin: 0 auto;
+      display: flex;
+      border-top: 1px solid var(--border, rgba(26,26,24,0.12));
+    }
+    .cc-page-nav a {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      padding: 2rem 2.5rem;
+      text-decoration: none;
+      color: inherit;
+      transition: background 0.15s;
+    }
+    .cc-page-nav a:hover {
+      background: var(--color-background-secondary, #f5f4f0);
+    }
+    .cc-page-nav a + a {
+      border-left: 1px solid var(--border, rgba(26,26,24,0.12));
+      text-align: right;
+    }
+    .cc-page-nav .cc-pn-label {
+      font-size: 10px;
+      font-weight: 500;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--ink3, var(--color-text-tertiary, #9a9a94));
+      margin-bottom: 0.4rem;
+    }
+    .cc-page-nav .cc-pn-title {
+      font-family: 'Playfair Display', Georgia, serif;
+      font-size: 1.1rem;
+      font-weight: 600;
+      line-height: 1.3;
+      color: var(--ink, var(--color-text-primary, #1a1a18));
+    }
+    @media (max-width: 560px) {
+      .cc-page-nav a { padding: 1.5rem 1.25rem; }
+      .cc-page-nav .cc-pn-title { font-size: 0.95rem; }
+    }
+
+    @media (prefers-color-scheme: dark) {
+      .cc-page-nav a:hover {
+        background: var(--color-background-secondary, #242420);
+      }
+    }
   `;
   document.head.appendChild(style);
 
@@ -333,5 +382,65 @@
     document.addEventListener("keydown", function (e) {
       if (e.key === "Escape" && menuOpen) toggle();
     });
+
+    /* ── sequential page navigation ── */
+    const pages = [
+      { path: "primer/technical-primer.html", title: "Technical Primer" },
+      { path: "architecture/index.html", title: "Convergence Architecture" },
+      { path: "campaigns/cachecow_rancher.html", title: "For Ranchers" },
+      { path: "campaigns/cachecow_investor.html", title: "Investor Thesis" },
+      { path: "campaigns/cachecow_hardware.html", title: "Hardware + Subscription" },
+      { path: "campaigns/cachecow_data.html", title: "Data Licensing" },
+      { path: "campaigns/cachecow_platform.html", title: "Movement Intelligence" },
+      { path: "campaigns/cachecow_mii.html", title: "Motion Intelligence Index" },
+      { path: "campaigns/cachecow_weather.html", title: "Weather Intelligence" },
+      { path: "campaigns/wearables_vs_cattle_isomorphism.html", title: "Wearables Isomorphism" },
+      { path: "campaigns/cachecow_investor_revenue_pages.html", title: "Revenue Model" },
+      { path: "accelerators/dashboard.html", title: "Accelerator Pipeline" },
+    ];
+
+    // find current page in sequence
+    const loc = window.location.pathname;
+    let idx = pages.findIndex(function (p) {
+      return loc.endsWith(p.path) || loc.endsWith(p.path.replace(/^.*\//, ""));
+    });
+
+    if (idx !== -1) {
+      const prev = idx > 0 ? pages[idx - 1] : null;
+      const next = idx < pages.length - 1 ? pages[idx + 1] : null;
+
+      if (prev || next) {
+        const nav = document.createElement("div");
+        nav.className = "cc-page-nav";
+        let html = "";
+
+        if (prev) {
+          html += '<a href="' + base + prev.path + '">' +
+            '<span class="cc-pn-label">&larr; Previous</span>' +
+            '<span class="cc-pn-title">' + prev.title + '</span></a>';
+        }
+        if (next) {
+          html += '<a href="' + base + next.path + '">' +
+            '<span class="cc-pn-label">Next &rarr;</span>' +
+            '<span class="cc-pn-title">' + next.title + '</span></a>';
+        }
+
+        nav.innerHTML = html;
+
+        // insert before footer or at end of main wrapper
+        const footer = document.querySelector(".footer, .footer-bar");
+        if (footer && footer.parentNode) {
+          footer.parentNode.insertBefore(nav, footer);
+        } else {
+          // find the main content wrapper and append
+          const wrap = document.querySelector(".wrap, .app, #root");
+          if (wrap) {
+            wrap.appendChild(nav);
+          } else {
+            document.body.appendChild(nav);
+          }
+        }
+      }
+    }
   }
 })();
