@@ -340,22 +340,30 @@
         cx += (tx - cx) * lerp;
         cy += (ty - cy) * lerp;
 
-        // repel cow from nav buttons — invisible magnets
-        // cow is pushed away whenever it gets close to a link, regardless of mouse
-        var navLinks = document.querySelectorAll(".cc-page-nav a");
+        // virtual fencing — cow repels from ALL clickable elements
+        // links, buttons, nav items — the cow knows to stay away
+        var fenceEls = document.querySelectorAll(
+          "a, button, .snl, .tb, .bg, .bo, .cc-page-nav a, nav a, .site-nav a, .topbar a, [onclick]"
+        );
         var repelX = 0, repelY = 0;
         var cowCX = cx + fabW / 2, cowCY = cy + fabH / 2;
-        for (var i = 0; i < navLinks.length; i++) {
-          var r = navLinks[i].getBoundingClientRect();
-          // nearest point on the link rect to the cow center
+        for (var i = 0; i < fenceEls.length; i++) {
+          var el = fenceEls[i];
+          // skip elements inside the fullscreen menu or the fab itself
+          if (el.closest(".cc-fs-menu") || el.closest(".cc-menu-fab")) continue;
+          var r = el.getBoundingClientRect();
+          // skip offscreen or zero-size elements
+          if (r.width === 0 || r.height === 0) continue;
+          if (r.bottom < 0 || r.top > window.innerHeight) continue;
+          // nearest point on the element rect to the cow center
           var nearX = Math.max(r.left, Math.min(cowCX, r.right));
           var nearY = Math.max(r.top, Math.min(cowCY, r.bottom));
           var dx = cowCX - nearX;
           var dy = cowCY - nearY;
           var dist = Math.sqrt(dx * dx + dy * dy) || 0.1;
-          var repelRadius = 120;
+          var repelRadius = 80;
           if (dist < repelRadius) {
-            var force = (1 - dist / repelRadius) * 24;
+            var force = (1 - dist / repelRadius) * 20;
             repelX += (dx / dist) * force;
             repelY += (dy / dist) * force;
           }
