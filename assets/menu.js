@@ -46,6 +46,19 @@
       filter: drop-shadow(0 4px 16px rgba(0,0,0,0.28));
     }
 
+    /* shimmer when cow reaches the nav crosshairs */
+    @keyframes cc-shimmer {
+      0%   { filter: drop-shadow(0 2px 8px rgba(0,0,0,0.18)); }
+      20%  { filter: drop-shadow(0 0 18px rgba(192,145,45,0.6)) drop-shadow(0 0 6px rgba(192,145,45,0.3)); }
+      40%  { filter: drop-shadow(0 0 10px rgba(192,145,45,0.15)); }
+      60%  { filter: drop-shadow(0 0 22px rgba(192,145,45,0.55)) drop-shadow(0 0 8px rgba(239,162,189,0.3)); }
+      80%  { filter: drop-shadow(0 0 6px rgba(192,145,45,0.1)); }
+      100% { filter: drop-shadow(0 0 14px rgba(192,145,45,0.45)) drop-shadow(0 0 4px rgba(192,145,45,0.2)); }
+    }
+    .cc-menu-fab.cc-shimmer {
+      animation: cc-shimmer 2.5s ease-in-out infinite;
+    }
+
     @media (max-width: 700px) {
       .cc-menu-fab { width: 48px; height: 48px; }
     }
@@ -255,14 +268,15 @@
 
     function setIdleTarget() {
       isIdle = true;
-      tx = window.innerWidth / 2 - fabW / 2;
-      ty = window.innerHeight - 80;
-      // respect the forcefield above the page nav
+      // rest at the crosshairs of the prev/next nav
       var navEl = document.querySelector(".cc-page-nav");
       if (navEl) {
         var navRect = navEl.getBoundingClientRect();
-        var maxY = navRect.top - fabH - 4;
-        if (ty > maxY) ty = maxY;
+        tx = navRect.left + navRect.width / 2 - fabW / 2;
+        ty = navRect.top + navRect.height / 2 - fabH / 2;
+      } else {
+        tx = window.innerWidth / 2 - fabW / 2;
+        ty = window.innerHeight - 80;
       }
     }
 
@@ -296,21 +310,30 @@
     });
 
     // animation loop
+    var isShimmering = false;
     function tick() {
       if (!menuOpen) {
         cx += (tx - cx) * lerp;
         cy += (ty - cy) * lerp;
-
-        // clamp: cow cannot overlap the page nav bar (forcefield!)
-        var navEl = document.querySelector(".cc-page-nav");
-        if (navEl) {
-          var navRect = navEl.getBoundingClientRect();
-          var maxY = navRect.top - fabH - 4;
-          if (cy > maxY) cy = maxY;
-        }
-
         fab.style.left = cx + "px";
         fab.style.top = cy + "px";
+
+        // shimmer when resting at the nav crosshairs
+        var navEl = document.querySelector(".cc-page-nav");
+        if (isIdle && navEl) {
+          var navRect = navEl.getBoundingClientRect();
+          var crossX = navRect.left + navRect.width / 2 - fabW / 2;
+          var crossY = navRect.top + navRect.height / 2 - fabH / 2;
+          var dist = Math.abs(cx - crossX) + Math.abs(cy - crossY);
+          if (dist < 10 && !isShimmering) {
+            fab.classList.add("cc-shimmer");
+            isShimmering = true;
+          }
+        }
+        if (!isIdle && isShimmering) {
+          fab.classList.remove("cc-shimmer");
+          isShimmering = false;
+        }
       }
       requestAnimationFrame(tick);
     }
