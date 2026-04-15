@@ -284,22 +284,14 @@
 
     function setIdleTarget() {
       isIdle = true;
-      // rest at the crosshairs of the prev/next nav
-      var navEl = document.querySelector(".cc-page-nav");
-      if (navEl) {
-        var navRect = navEl.getBoundingClientRect();
-        tx = navRect.left + navRect.width / 2 - fabW / 2;
-        ty = navRect.top + navRect.height / 2 - fabH / 2;
-      } else {
-        tx = window.innerWidth / 2 - fabW / 2;
-        ty = window.innerHeight - 80;
-      }
+      tx = window.innerWidth / 2 - fabW / 2;
+      ty = window.innerHeight - fabH - 16;
     }
 
     function resetIdleTimer() {
       isIdle = false;
       clearTimeout(idleTimer);
-      idleTimer = setTimeout(setIdleTarget, 10000);
+      idleTimer = setTimeout(setIdleTarget, 5000);
     }
 
     // track mouse — offset so cow is beside cursor, not under it
@@ -334,16 +326,15 @@
         fab.style.left = cx + "px";
         fab.style.top = cy + "px";
 
-        // shimmer when resting at the nav crosshairs
-        var navEl = document.querySelector(".cc-page-nav");
-        if (isIdle && navEl) {
-          var navRect = navEl.getBoundingClientRect();
-          var crossX = navRect.left + navRect.width / 2 - fabW / 2;
-          var crossY = navRect.top + navRect.height / 2 - fabH / 2;
-          var dist = Math.abs(cx - crossX) + Math.abs(cy - crossY);
+        // shimmer when cow settles at idle position
+        if (isIdle) {
+          var idleX = window.innerWidth / 2 - fabW / 2;
+          var idleY = window.innerHeight - fabH - 16;
+          var dist = Math.abs(cx - idleX) + Math.abs(cy - idleY);
           if (dist < 30 && !isShimmering) {
             fab.classList.add("cc-shimmer");
-            navEl.classList.add("cc-nav-glow");
+            var navEl = document.querySelector(".cc-page-nav");
+            if (navEl) navEl.classList.add("cc-nav-glow");
             isShimmering = true;
           }
         }
