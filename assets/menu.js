@@ -48,15 +48,13 @@
 
     /* shimmer when cow reaches the nav crosshairs */
     @keyframes cc-shimmer {
-      0%   { filter: drop-shadow(0 2px 8px rgba(0,0,0,0.18)); }
-      20%  { filter: drop-shadow(0 0 18px rgba(192,145,45,0.6)) drop-shadow(0 0 6px rgba(192,145,45,0.3)); }
-      40%  { filter: drop-shadow(0 0 10px rgba(192,145,45,0.15)); }
-      60%  { filter: drop-shadow(0 0 22px rgba(192,145,45,0.55)) drop-shadow(0 0 8px rgba(239,162,189,0.3)); }
-      80%  { filter: drop-shadow(0 0 6px rgba(192,145,45,0.1)); }
-      100% { filter: drop-shadow(0 0 14px rgba(192,145,45,0.45)) drop-shadow(0 0 4px rgba(192,145,45,0.2)); }
+      0%   { filter: drop-shadow(0 0 4px rgba(192,145,45,0.2)) drop-shadow(0 2px 6px rgba(0,0,0,0.12)); }
+      50%  { filter: drop-shadow(0 0 24px rgba(192,145,45,0.7)) drop-shadow(0 0 48px rgba(192,145,45,0.35)) drop-shadow(0 0 8px rgba(239,162,189,0.4)); }
+      100% { filter: drop-shadow(0 0 4px rgba(192,145,45,0.2)) drop-shadow(0 2px 6px rgba(0,0,0,0.12)); }
     }
     .cc-menu-fab.cc-shimmer {
-      animation: cc-shimmer 2.5s ease-in-out infinite;
+      filter: none;
+      animation: cc-shimmer 2s ease-in-out infinite;
     }
 
     @media (max-width: 700px) {
@@ -325,7 +323,7 @@
           var crossX = navRect.left + navRect.width / 2 - fabW / 2;
           var crossY = navRect.top + navRect.height / 2 - fabH / 2;
           var dist = Math.abs(cx - crossX) + Math.abs(cy - crossY);
-          if (dist < 10 && !isShimmering) {
+          if (dist < 30 && !isShimmering) {
             fab.classList.add("cc-shimmer");
             isShimmering = true;
           }
