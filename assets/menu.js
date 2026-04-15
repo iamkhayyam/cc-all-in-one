@@ -306,8 +306,13 @@
     }
 
     // track mouse — offset so cow is beside cursor, not under it
+    var mouseX = window.innerWidth / 2;
+    var mouseY = window.innerHeight / 2;
+    var hoveringNav = false;
     document.addEventListener("mousemove", function (e) {
       if (menuOpen) return;
+      mouseX = e.clientX;
+      mouseY = e.clientY;
       tx = e.clientX - fabW / 2;
       ty = e.clientY - fabH / 2;
       resetIdleTimer();
@@ -334,6 +339,32 @@
       if (!menuOpen) {
         cx += (tx - cx) * lerp;
         cy += (ty - cy) * lerp;
+
+        // repel cow from nav buttons — invisible magnets
+        var navLinks = document.querySelectorAll(".cc-page-nav a");
+        var repelX = 0, repelY = 0;
+        var cowCX = cx + fabW / 2, cowCY = cy + fabH / 2;
+        for (var i = 0; i < navLinks.length; i++) {
+          var r = navLinks[i].getBoundingClientRect();
+          // check if mouse is hovering this link
+          if (mouseX >= r.left && mouseX <= r.right && mouseY >= r.top && mouseY <= r.bottom) {
+            // center of the link
+            var linkCX = r.left + r.width / 2;
+            var linkCY = r.top + r.height / 2;
+            var dx = cowCX - linkCX;
+            var dy = cowCY - linkCY;
+            var dist = Math.sqrt(dx * dx + dy * dy) || 1;
+            var repelRadius = 200;
+            if (dist < repelRadius) {
+              var force = (1 - dist / repelRadius) * 18;
+              repelX += (dx / dist) * force;
+              repelY += (dy / dist) * force;
+            }
+          }
+        }
+        cx += repelX;
+        cy += repelY;
+
         fab.style.left = cx + "px";
         fab.style.top = cy + "px";
 
