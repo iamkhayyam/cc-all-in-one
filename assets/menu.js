@@ -219,10 +219,21 @@
     .cc-page-nav.cc-nav-glow a:nth-child(2) {
       animation-delay: 0.5s;
     }
+    .cc-page-nav.cc-nav-glow .cc-pn-label {
+      animation: cc-nav-label-glow 2s ease-in-out infinite;
+    }
+    .cc-page-nav.cc-nav-glow a:nth-child(2) .cc-pn-label {
+      animation-delay: 0.5s;
+    }
     @keyframes cc-nav-glow {
-      0%   { box-shadow: none; }
-      50%  { box-shadow: inset 0 0 20px rgba(192,145,45,0.1), 0 0 16px rgba(192,145,45,0.12); }
-      100% { box-shadow: none; }
+      0%   { box-shadow: inset 0 0 4px rgba(192,145,45,0.05); }
+      50%  { box-shadow: inset 0 0 30px rgba(192,145,45,0.15), 0 0 24px rgba(192,145,45,0.2), 0 0 48px rgba(192,145,45,0.1); }
+      100% { box-shadow: inset 0 0 4px rgba(192,145,45,0.05); }
+    }
+    @keyframes cc-nav-label-glow {
+      0%   { color: var(--ink3, var(--color-text-tertiary, #9a9a94)); }
+      50%  { color: rgba(192,145,45,0.85); }
+      100% { color: var(--ink3, var(--color-text-tertiary, #9a9a94)); }
     }
     .cc-page-nav a + a {
       border-left: 1px solid var(--border, rgba(26,26,24,0.12));
@@ -326,22 +337,31 @@
         fab.style.left = cx + "px";
         fab.style.top = cy + "px";
 
-        // shimmer when cow settles at idle position
-        if (isIdle) {
-          var idleX = window.innerWidth / 2 - fabW / 2;
-          var idleY = window.innerHeight - fabH - 16;
-          var dist = Math.abs(cx - idleX) + Math.abs(cy - idleY);
-          if (dist < 30 && !isShimmering) {
-            fab.classList.add("cc-shimmer");
-            var navEl = document.querySelector(".cc-page-nav");
-            if (navEl) navEl.classList.add("cc-nav-glow");
-            isShimmering = true;
+        // nav glows when visible in viewport; cow shimmers only when nav is NOT visible
+        var navEl = document.querySelector(".cc-page-nav");
+        var navVisible = false;
+        if (navEl) {
+          var navRect = navEl.getBoundingClientRect();
+          navVisible = navRect.top < window.innerHeight && navRect.bottom > 0;
+        }
+
+        if (navVisible) {
+          // nav is on screen — glow the buttons, no cow shimmer
+          if (!navEl.classList.contains("cc-nav-glow")) navEl.classList.add("cc-nav-glow");
+          if (isShimmering) { fab.classList.remove("cc-shimmer"); isShimmering = false; }
+        } else {
+          // nav is off screen — remove nav glow
+          if (navEl && navEl.classList.contains("cc-nav-glow")) navEl.classList.remove("cc-nav-glow");
+          // cow shimmers when idle and settled
+          if (isIdle) {
+            var idleX = window.innerWidth / 2 - fabW / 2;
+            var idleY = window.innerHeight - fabH - 16;
+            var dist = Math.abs(cx - idleX) + Math.abs(cy - idleY);
+            if (dist < 30 && !isShimmering) { fab.classList.add("cc-shimmer"); isShimmering = true; }
           }
         }
         if (!isIdle && isShimmering) {
           fab.classList.remove("cc-shimmer");
-          var glowNav = document.querySelector(".cc-page-nav.cc-nav-glow");
-          if (glowNav) glowNav.classList.remove("cc-nav-glow");
           isShimmering = false;
         }
       }
