@@ -361,15 +361,31 @@
           var dx = cowCX - nearX;
           var dy = cowCY - nearY;
           var dist = Math.sqrt(dx * dx + dy * dy) || 0.1;
-          var repelRadius = 80;
+          var repelRadius = 140;
           if (dist < repelRadius) {
-            var force = (1 - dist / repelRadius) * 20;
+            var force = (1 - dist / repelRadius) * 35;
             repelX += (dx / dist) * force;
             repelY += (dy / dist) * force;
           }
         }
         cx += repelX;
         cy += repelY;
+
+        // if cow overlaps ANY clickable element, let clicks pass through
+        var cowRect = { left: cx, top: cy, right: cx + fabW, bottom: cy + fabH };
+        var overlapping = false;
+        for (var j = 0; j < fenceEls.length; j++) {
+          var el2 = fenceEls[j];
+          if (el2.closest(".cc-fs-menu") || el2.closest(".cc-menu-fab")) continue;
+          var r2 = el2.getBoundingClientRect();
+          if (r2.width === 0 || r2.height === 0) continue;
+          if (cowRect.right > r2.left && cowRect.left < r2.right &&
+              cowRect.bottom > r2.top && cowRect.top < r2.bottom) {
+            overlapping = true;
+            break;
+          }
+        }
+        fab.style.pointerEvents = overlapping ? "none" : "auto";
 
         fab.style.left = cx + "px";
         fab.style.top = cy + "px";
