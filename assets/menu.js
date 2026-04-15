@@ -212,7 +212,7 @@
       font-size: 1.1rem;
       font-weight: 600;
       line-height: 1.3;
-      color: var(--ink, var(--color-text-primary, #1a1a18));
+      color: var(--ink2, var(--color-text-secondary, #5a5a56));
     }
     @media (max-width: 560px) {
       .cc-page-nav a { padding: 1.5rem 1.25rem; }
@@ -257,6 +257,13 @@
       isIdle = true;
       tx = window.innerWidth / 2 - fabW / 2;
       ty = window.innerHeight - 80;
+      // respect the forcefield above the page nav
+      var navEl = document.querySelector(".cc-page-nav");
+      if (navEl) {
+        var navRect = navEl.getBoundingClientRect();
+        var maxY = navRect.top - fabH - 4;
+        if (ty > maxY) ty = maxY;
+      }
     }
 
     function resetIdleTimer() {
@@ -293,6 +300,15 @@
       if (!menuOpen) {
         cx += (tx - cx) * lerp;
         cy += (ty - cy) * lerp;
+
+        // clamp: cow cannot overlap the page nav bar (forcefield!)
+        var navEl = document.querySelector(".cc-page-nav");
+        if (navEl) {
+          var navRect = navEl.getBoundingClientRect();
+          var maxY = navRect.top - fabH - 4;
+          if (cy > maxY) cy = maxY;
+        }
+
         fab.style.left = cx + "px";
         fab.style.top = cy + "px";
       }
