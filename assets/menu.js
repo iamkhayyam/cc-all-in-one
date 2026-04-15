@@ -9,7 +9,13 @@
   const gsapScript = document.createElement("script");
   gsapScript.src =
     "https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.4/gsap.min.js";
-  gsapScript.onload = init;
+  gsapScript.onload = function () {
+    if (document.readyState === "loading") {
+      document.addEventListener("DOMContentLoaded", init);
+    } else {
+      init();
+    }
+  };
   document.head.appendChild(gsapScript);
 
   /* ── inject styles ── */
@@ -400,9 +406,9 @@
     ];
 
     // find current page in sequence
-    const loc = window.location.pathname;
+    const loc = window.location.pathname.replace(/\/$/, "");
     let idx = pages.findIndex(function (p) {
-      return loc.endsWith(p.path) || loc.endsWith(p.path.replace(/^.*\//, ""));
+      return loc.indexOf(p.path) !== -1;
     });
 
     if (idx !== -1) {
@@ -427,18 +433,16 @@
 
         nav.innerHTML = html;
 
-        // insert before footer or at end of main wrapper
+        // insert before footer, or before the menu script, or at end of body
         const footer = document.querySelector(".footer, .footer-bar");
+        const wrap = document.querySelector(".wrap, .app");
         if (footer && footer.parentNode) {
           footer.parentNode.insertBefore(nav, footer);
+        } else if (wrap) {
+          wrap.appendChild(nav);
         } else {
-          // find the main content wrapper and append
-          const wrap = document.querySelector(".wrap, .app, #root");
-          if (wrap) {
-            wrap.appendChild(nav);
-          } else {
-            document.body.appendChild(nav);
-          }
+          // fallback: insert before the floating menu elements
+          document.body.insertBefore(nav, fab);
         }
       }
     }
