@@ -205,6 +205,24 @@
     }
     .cc-page-nav a:hover {
       background: var(--color-background-secondary, #f5f4f0);
+      box-shadow: inset 0 0 24px rgba(192,145,45,0.12), 0 0 20px rgba(192,145,45,0.15);
+    }
+    .cc-page-nav a:hover .cc-pn-title {
+      color: var(--ink, var(--color-text-primary, #1a1a18));
+    }
+    .cc-page-nav a:hover .cc-pn-label {
+      color: rgba(192,145,45,0.8);
+    }
+    .cc-page-nav.cc-nav-glow a {
+      animation: cc-nav-glow 2s ease-in-out infinite;
+    }
+    .cc-page-nav.cc-nav-glow a:nth-child(2) {
+      animation-delay: 0.5s;
+    }
+    @keyframes cc-nav-glow {
+      0%   { box-shadow: none; }
+      50%  { box-shadow: inset 0 0 20px rgba(192,145,45,0.1), 0 0 16px rgba(192,145,45,0.12); }
+      100% { box-shadow: none; }
     }
     .cc-page-nav a + a {
       border-left: 1px solid var(--border, rgba(26,26,24,0.12));
@@ -325,11 +343,14 @@
           var dist = Math.abs(cx - crossX) + Math.abs(cy - crossY);
           if (dist < 30 && !isShimmering) {
             fab.classList.add("cc-shimmer");
+            navEl.classList.add("cc-nav-glow");
             isShimmering = true;
           }
         }
         if (!isIdle && isShimmering) {
           fab.classList.remove("cc-shimmer");
+          var glowNav = document.querySelector(".cc-page-nav.cc-nav-glow");
+          if (glowNav) glowNav.classList.remove("cc-nav-glow");
           isShimmering = false;
         }
       }
