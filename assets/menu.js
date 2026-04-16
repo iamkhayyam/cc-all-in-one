@@ -30,6 +30,9 @@
               ]},
               { label: "Strategy", links: [
                 { title: "Accelerator Pipeline", href: base + "accelerators/dashboard.html" }
+              ]},
+              { label: "Investor Materials", links: [
+                { title: "Data Room", href: base + "data-room/index.html" }
               ]}
             ],
             tagline: "ForcedField Technologies \u00b7 Confidential"
